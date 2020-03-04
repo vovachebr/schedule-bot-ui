@@ -21,7 +21,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://shedule-bot-api.herokuapp.com/",
+  "proxy": "https://shedule-bot-api.herokuapp.com/",
   "eslintConfig": {
     "extends": "react-app"
   },
