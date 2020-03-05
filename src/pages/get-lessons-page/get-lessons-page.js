@@ -56,14 +56,13 @@ function GetLessonsPage() {
     { title: 'Время', field: 'time' },
     { title: 'Группа', field: 'group' },
     { title: 'Лектор', field: 'teacher' },
+    { title: 'Уже было отправлено?', field: 'isSent'}
   ];
   
   React.useEffect(() => {
     fetch('/lessons')
         .then(response => response.json())
-        .then(result => {
-          setLessons(result.lessons)
-        });
+        .then(result => setLessons(result.lessons));
   }, []);
 
   return (

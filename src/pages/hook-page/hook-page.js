@@ -51,13 +51,11 @@ const tableIcons = {
 function HookPage() {
   const classes = useStyles();
 
-  const [state, setState] = React.useState({
-    columns: [
-      { title: 'Значение', field: 'value' },
-      { title: 'Канал', field: 'channel' },
-      { title: 'Группа', field: 'group' }
-    ],
-  });
+  const columns = [
+    { title: 'Значение', field: 'value' },
+    { title: 'Канал', field: 'channel' },
+    { title: 'Группа', field: 'group' }
+  ];
 
   return (
     <div className={classes.table}>
@@ -66,7 +64,7 @@ function HookPage() {
           <MaterialTable
           title="Хуки"
           icons={tableIcons}
-          columns={state.columns}
+          columns={columns}
           data={data.hooks}
           editable={{
             onRowAdd: newData =>
