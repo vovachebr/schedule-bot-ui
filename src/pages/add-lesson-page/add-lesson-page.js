@@ -229,7 +229,7 @@ function AddLessonPage({enqueueSnackbar}) {
 ${additional} \n\n
 Ссылку на трансляцию вы найдете в личном кабинете и в письме, которое сегодня придет вам на почту за два часа до лекции.`}
               </pre>
-        <img alt="изображение отсутствует" width="600px" height="300px" src={imageUrl} />
+        <img alt="изображение отсутствует" width="500px" height="250px" src={imageUrl} />
         <Button variant="contained" className={classes.sendButton} onClick={createLesson}>Создать занятие</Button>
       </div>
     </div>
