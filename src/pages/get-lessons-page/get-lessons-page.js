@@ -5,6 +5,8 @@ import MaterialTable from 'material-table';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 import Clear from '@material-ui/icons/Clear';
@@ -23,6 +25,9 @@ const useStyles = makeStyles(theme => ({
     width: "90%",
     marginLeft: "5%",
     marginTop: "2%"
+  },
+  checkbox: {
+    display: "flex"
   }
 }));
 
@@ -50,24 +55,34 @@ function GetLessonsPage() {
   const classes = useStyles();
 
   const [lessons, setLessons] = React.useState();
+  const [isSendLessons, changeIsSendLessons] = React.useState(false);
   const columns = [
     { title: 'Занятие', field: 'lecture' },
     { title: 'Дата', field: 'date' },
     { title: 'Время', field: 'time' },
     { title: 'Группа', field: 'group' },
-    { title: 'Лектор', field: 'teacher' },
-    { title: 'Уже было отправлено?', field: 'isSent'}
+    { title: 'Лектор', field: 'teacher' }
   ];
+
+  const getLessons = (isSendLessons) => {
+    fetch(`/lessons?isSent=${isSendLessons}`)
+    .then(response => response.json())
+    .then(result => setLessons(result.lessons));
+  }
   
-  React.useEffect(() => {
-    fetch('/lessons')
-        .then(response => response.json())
-        .then(result => setLessons(result.lessons));
-  }, []);
+  React.useEffect(() => getLessons(isSendLessons), []);
 
   return (
     <div className={classes.table}>
-
+      <FormControlLabel className={classes.checkbox}
+        control={
+          <Checkbox checked={isSendLessons} onChange={() => {
+            getLessons(!isSendLessons)
+            changeIsSendLessons(!isSendLessons)
+          }} color="primary"/>
+        }
+        label={`Отображаются ${isSendLessons ? "" : "не"}отправленные уроки`}
+      />
       <MaterialTable
         title="Занятия"
         icons={tableIcons}
