@@ -55,6 +55,7 @@ function HookPage() {
     { title: 'Значение', field: 'value' },
     { title: 'Канал', field: 'channel' },
     { title: 'Группа', field: 'group' },
+    { title: 'ID Канала/Чата', field: 'channelId' },
     { title: 'Способ общения', field: 'messegerType' }
   ];
 
