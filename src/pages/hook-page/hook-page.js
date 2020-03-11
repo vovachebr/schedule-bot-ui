@@ -54,7 +54,8 @@ function HookPage() {
   const columns = [
     { title: 'Значение', field: 'value' },
     { title: 'Канал', field: 'channel' },
-    { title: 'Группа', field: 'group' }
+    { title: 'Группа', field: 'group' },
+    { title: 'Способ общения', field: 'messegerType' }
   ];
 
   return (
