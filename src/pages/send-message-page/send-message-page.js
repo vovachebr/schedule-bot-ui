@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
 function SendMessagePage() {
   const classes = useStyles();
 
-  const [hook, setHook] = React.useState('');
+  const [channel, setChannel] = React.useState('');
   const [message, setMessage] = React.useState('');
 
   const inputLabel = React.useRef(null);
@@ -54,7 +54,7 @@ function SendMessagePage() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({hook, text: message})
+      body: JSON.stringify({channel, text: message})
     })
   };
 
@@ -71,15 +71,15 @@ function SendMessagePage() {
             <Select
               labelId="demo-simple-select-outlined-label"
               id="demo-simple-select-outlined"
-              value={hook}
-              onChange={event => setHook(event.target.value)}
+              value={channel}
+              onChange={event => setChannel(event.target.value)}
               labelWidth={labelWidth}
               >
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
               {
-                data.hooks.map(h => <MenuItem value={h.value} key={h.value}>Группа: "{h.group}", канал: "{h.channel}".</MenuItem>)
+                data.hooks.map(h => <MenuItem value={h.channel} key={h.channel}>Группа: "{h.group}", канал: "{h.channel}".</MenuItem>)
               }
             </Select>
           </FormControl>
@@ -105,6 +105,7 @@ function SendMessagePage() {
       </div>
       <pre className={classes.pre}>
         {`
+        Оповещения для слака:
         <@U024BE7LH> - оповещение пользователя по ID
         @here - оповещение только активных участников канала
         @channel - оповещение всех участников канала
