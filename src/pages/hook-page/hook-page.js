@@ -80,7 +80,6 @@ function HookPage() {
                 })
                 .then(response => response.json())
                 .then(result => {
-                  debugger;
                   data.updateHooks(result.hooks);
                   resolve(result.hooks);
                 });
