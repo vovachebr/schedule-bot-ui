@@ -1,8 +1,8 @@
 import React, { forwardRef } from 'react';
+import { withSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import MaterialTable from 'material-table';
-import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -19,6 +19,8 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import Telegram from '@material-ui/icons/Telegram';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -28,11 +30,13 @@ const useStyles = makeStyles(theme => ({
   },
   checkbox: {
     display: "flex"
+  },
+  button: {
+    marginLeft: "15%"
   }
 }));
 
 const tableIcons = {
-    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
     Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
     Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
     Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
@@ -51,8 +55,26 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
 
-function GetLessonsPage() {
+function GetLessonsPage({enqueueSnackbar}) {
   const classes = useStyles();
+
+  const sendLessonNotification = (rowData) => {
+    fetch('/lessons/sendNotification', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: `{"id" : "${rowData.id}"}`
+    })
+    .then(response => response.json())
+    .then(result => {
+      if(result.success){
+        enqueueSnackbar("Успешно удалено", { variant: 'success' });
+      } else {
+        enqueueSnackbar(`Ошибка: ${result.error}`, { variant: 'error' });
+      }
+    });
+  };
 
   const [lessons, setLessons] = React.useState();
   const [isSendLessons, changeIsSendLessons] = React.useState(false);
@@ -61,7 +83,11 @@ function GetLessonsPage() {
     { title: 'Дата', field: 'date' },
     { title: 'Время', field: 'time' },
     { title: 'Группа', field: 'group' },
-    { title: 'Лектор', field: 'teacher' }
+    { title: 'Лектор', field: 'teacher' },
+    {
+      title: 'Опубликовать сейчас',
+      render: rowData => <Button className={classes.button} variant="contained" onClick={() => sendLessonNotification(rowData)}><Telegram/></Button>
+    }
   ];
 
   const getLessons = (isSendLessons) => {
@@ -102,12 +128,29 @@ function GetLessonsPage() {
             .then(result => {
               setLessons(result.lessons);
               resolve(result.lessons);
+              enqueueSnackbar("Успешно удалено", { variant: 'success' });
             });
-          })
+          }),
+          onRowUpdate: (newData, oldData) =>
+          new Promise(resolve => {
+            fetch('/lessons/update', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(newData)
+            })
+            .then(response => response.json())
+            .then(result => {
+              setLessons(result.lessons);
+              resolve(result.lessons);
+              enqueueSnackbar("Успешно обновлено", { variant: 'success' });
+            });
+          }),
           }}
       />
     </div>
   );
 }
 
-export default GetLessonsPage;
+export default withSnackbar(GetLessonsPage);
