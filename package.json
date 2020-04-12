@@ -29,7 +29,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:80/api",
+  "proxy": "https://shedule-bot-api.herokuapp.com/api",
   "eslintConfig": {
     "extends": "react-app"
   },
