@@ -69,7 +69,7 @@ function GetLessonsPage({enqueueSnackbar}) {
     .then(response => response.json())
     .then(result => {
       if(result.success){
-        enqueueSnackbar("Успешно удалено", { variant: 'success' });
+        enqueueSnackbar(result.data, { variant: 'success' });
       } else {
         enqueueSnackbar(`Ошибка: ${result.error}`, { variant: 'error' });
       }
