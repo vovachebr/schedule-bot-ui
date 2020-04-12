@@ -3,12 +3,10 @@ import { withSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Stars } from '@material-ui/icons';
 import DateFnsUtils from '@date-io/date-fns';
 import {
@@ -52,7 +50,6 @@ const useStyles = makeStyles(theme => ({
     marginTop: "10px",
   }
 }));
-
 function AddLessonPage({enqueueSnackbar}) {
   const classes = useStyles();
 
@@ -62,12 +59,6 @@ function AddLessonPage({enqueueSnackbar}) {
   const [lector, setLector] = React.useState("");
   const [additional, setAdditional] = React.useState("");
   const [imageUrl, setImageUrl] = React.useState("");
-
-  const inputLabel = React.useRef(null);
-  const [labelWidth, setLabelWidth] = React.useState(0);
-  React.useEffect(() => {
-    setLabelWidth(inputLabel.current.offsetWidth);
-  }, []);
 
   const getDate = () => {
     const options = {
@@ -105,7 +96,6 @@ function AddLessonPage({enqueueSnackbar}) {
     fetch(`/lessons/getLastLecture?lecture=${lecture}`)
     .then(response => response.json())
     .then(result => {
-      debugger;
       if(result.success && result.lesson){
         setLecture(result.lesson.lecture);
         setLector(result.lesson.teacher);
@@ -158,23 +148,14 @@ function AddLessonPage({enqueueSnackbar}) {
           <h1>Конструктор сообщения:</h1>
           <div className={classes.messageConstructor}>
             <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel ref={inputLabel} id="demo-simple-select-outlined-label">
-                Группа/канал
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-outlined-label"
-                id="demo-simple-select-outlined"
-                value={hook}
-                onChange={event => setHook(event.target.value)}
-                labelWidth={labelWidth}
-                >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                {
-                  data.hooks.map(h => <MenuItem value={h} key={h.value}>Группа: "{h.group}", канал: "{h.channel}".</MenuItem>)
-                }
-              </Select>
+              <Autocomplete
+                id="group"
+                options={data.hooks}
+                getOptionLabel={(h) => `Группа: "${h.group}", канал: "${h.channel}".`}
+                onChange={(event, value) => setHook(value || {})}
+                style={{ width: '100%' }}
+                renderInput={(params) => <TextField {...params} label="Группа/канал" variant="outlined" />}
+              />
             </FormControl>
             <TextField label="Название занятия" variant="outlined" value={lecture} onChange={event => setLecture(event.target.value)} />
             <Button variant="outlined" color="primary" onClick={getLastLesson}>

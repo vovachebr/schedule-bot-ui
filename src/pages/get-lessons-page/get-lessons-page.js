@@ -76,7 +76,7 @@ function GetLessonsPage({enqueueSnackbar}) {
     });
   };
 
-  const [lessons, setLessons] = React.useState();
+  const [lessons, setLessons] = React.useState([]);
   const [isSendLessons, changeIsSendLessons] = React.useState(false);
   const columns = [
     { title: 'Занятие', field: 'lecture' },
@@ -86,7 +86,15 @@ function GetLessonsPage({enqueueSnackbar}) {
     { title: 'Лектор', field: 'teacher' },
     {
       title: 'Опубликовать сейчас',
-      render: rowData => <Button className={classes.button} variant="contained" onClick={() => sendLessonNotification(rowData)}><Telegram/></Button>
+      render: rowData => 
+        <Button 
+          className={classes.button}
+          variant="contained"
+          onClick={() => {
+            sendLessonNotification(rowData);
+          }}>
+          <Telegram/>
+        </Button>
     }
   ];
 
@@ -114,6 +122,10 @@ function GetLessonsPage({enqueueSnackbar}) {
         icons={tableIcons}
         columns={columns}
         data={lessons}
+        options={{
+          pageSize: 20,
+          pageSizeOptions:[20,30,40,50,lessons.length || 100]
+        }}
         editable={{
           onRowDelete: oldData =>
           new Promise(resolve => {

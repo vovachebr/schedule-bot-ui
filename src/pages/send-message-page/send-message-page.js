@@ -2,10 +2,8 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import Button from '@material-ui/core/Button';
 import { Send } from '@material-ui/icons';
 
@@ -42,12 +40,6 @@ function SendMessagePage() {
   const [channel, setChannel] = React.useState('');
   const [message, setMessage] = React.useState('');
 
-  const inputLabel = React.useRef(null);
-  const [labelWidth, setLabelWidth] = React.useState(0);
-  React.useEffect(() => {
-    setLabelWidth(inputLabel.current.offsetWidth);
-  }, []);
-
   const sendMessage = () => {
     fetch('/sendInstantMessage', {
       method: 'POST',
@@ -65,23 +57,14 @@ function SendMessagePage() {
         <HooksContext.Consumer>
         {data => (
           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel ref={inputLabel} id="demo-simple-select-outlined-label">
-              Группа/канал
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
-              value={channel}
-              onChange={event => setChannel(event.target.value)}
-              labelWidth={labelWidth}
-              >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              {
-                data.hooks.map(h => <MenuItem value={h.channel} key={h.channel}>Группа: "{h.group}", канал: "{h.channel}".</MenuItem>)
-              }
-            </Select>
+            <Autocomplete
+                id="combo-box"
+                options={data.hooks}
+                getOptionLabel={(h) => `Группа: "${h.group}", канал: "${h.channel}".`}
+                onChange={(event, value) => setChannel(value? value.channel : {})}
+                style={{ width: '100%' }}
+                renderInput={(params) => <TextField {...params} label="Группа/канал" variant="outlined" />}
+              />
           </FormControl>
             )}
         </HooksContext.Consumer>

@@ -4,16 +4,17 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
-    "@material-ui/core": "^4.9.5",
+    "@material-ui/core": "^4.9.10",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.49",
     "@material-ui/pickers": "^3.2.10",
     "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.4.0",
+    "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "material-table": "^1.57.2",
-    "notistack": "^0.9.8",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
+    "notistack": "^0.9.9",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0"
   },
@@ -23,7 +24,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://shedule-bot-api.herokuapp.com/api",
+  "proxy": "http://localhost:80/api",
   "eslintConfig": {
     "extends": "react-app"
   },
