@@ -52,7 +52,7 @@ function HookPage() {
   const classes = useStyles();
 
   const columns = [
-    { title: 'Значение', field: 'value' },
+  { title: 'Значение', field: 'value', cellStyle: {width:"50%", wordBreak: "break-all"}},
     { title: 'Канал', field: 'channel' },
     { title: 'Группа', field: 'group' },
     { title: 'ID Канала/Чата', field: 'channelId' },
