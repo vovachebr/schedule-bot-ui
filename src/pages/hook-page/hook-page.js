@@ -116,7 +116,7 @@ function HookPage() {
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: `{"value" : "${oldData.value}"}`
+                body: `{"value": ${oldData.value}, "channelId": ${oldData.channelId}}`
               })
               .then(response => response.json())
               .then(result => {
