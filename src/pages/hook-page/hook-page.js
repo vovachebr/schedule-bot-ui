@@ -92,6 +92,7 @@ function HookPage() {
             {
               const body = {
                 oldValue: oldData.value,
+                oldChannel: oldData.channelId,
                 ...newData
               }
               return new Promise(resolve => {
@@ -111,12 +112,17 @@ function HookPage() {
             },
             onRowDelete: oldData =>
             new Promise(resolve => {
+              const body = { channelId: oldData.channelId };
+              if(oldData.value){
+                body.value = oldData.value; 
+              } 
+
               fetch('/hooks/remove', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: `{"value": ${oldData.value}, "channelId": ${oldData.channelId}}`
+                body: JSON.stringify(body)
               })
               .then(response => response.json())
               .then(result => {
