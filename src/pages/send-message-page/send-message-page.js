@@ -1,18 +1,23 @@
 import React from 'react';
+import { withSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { Send } from '@material-ui/icons';
 
 import { HooksContext } from '../../App';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
-    margin: theme.spacing(0.5),
+    margin: "2% 0 2% 0",
     minWidth: 200,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between"
   },
   constainer: {
     width: "90%",
@@ -34,13 +39,22 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function SendMessagePage() {
+function SendMessagePage({enqueueSnackbar}) {
   const classes = useStyles();
 
   const [channel, setChannel] = React.useState('');
   const [message, setMessage] = React.useState('');
 
+  const [templates, setTemplate] = React.useState([]);
+  const [selectedTemplate, setSelectedTemplate] = React.useState(null);
+  const [isLoadingTemplate, setIsLoadingTemplate] = React.useState(false);
+
   const sendMessage = () => {
+    if(!channel){
+      enqueueSnackbar("Канал не был выбран", { variant: 'error' });
+      return;
+    };
+
     fetch('/sendInstantMessage', {
       method: 'POST',
       headers: {
@@ -48,7 +62,39 @@ function SendMessagePage() {
       },
       body: JSON.stringify({channel, text: message})
     })
+    enqueueSnackbar("Сообщение отправлено", { variant: 'info' });
   };
+
+  const getTemplates = () => {
+    setIsLoadingTemplate(true);
+    fetch('/templates', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }).then(res => res.json()).then(res => {
+      setTemplate(res.templates);
+      setIsLoadingTemplate(false);
+    });
+  };
+
+  const getTemplate = (template) => {
+    setIsLoadingTemplate(true);
+    fetch(`/templates?id=${template.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }).then(res => res.json()).then(res => {
+      setIsLoadingTemplate(false);
+      setMessage(res.template.text);
+    });
+  };
+  
+  React.useEffect(() => {
+    if(!templates.length)
+      getTemplates();
+  });
 
   return (
     <div className="SendMessagePage">
@@ -58,12 +104,27 @@ function SendMessagePage() {
         {data => (
           <FormControl variant="outlined" className={classes.formControl}>
             <Autocomplete
-                id="combo-box"
+                id="channel-combo-box"
                 options={data.hooks}
                 getOptionLabel={(h) => `Группа: "${h.group}", канал: "${h.channel}".`}
                 onChange={(event, value) => setChannel(value? value.channel : {})}
-                style={{ width: '100%' }}
+                style={{ width: '45%' }}
                 renderInput={(params) => <TextField {...params} label="Группа/канал" variant="outlined" />}
+              />
+            {isLoadingTemplate && <CircularProgress />}
+            <Autocomplete
+                id="template-combo-box"
+                options={templates}
+                value={selectedTemplate}
+                getOptionLabel={(h) => `${h.title}`}
+                onChange={(event, value) => {
+                  setSelectedTemplate(value);
+                  if(value){
+                    getTemplate(value);
+                  }
+                }}
+                style={{ width: '45%'}}
+                renderInput={(params) => <TextField {...params} label="Шаблон сообщения" variant="outlined" />}
               />
           </FormControl>
             )}
@@ -74,7 +135,7 @@ function SendMessagePage() {
           multiline
           rows="8"
           value={message}
-          onInput={e => setMessage(e.target.value)}
+          onInput={e => {setMessage(e.target.value); setSelectedTemplate(null)}}
         />
         <Button
           variant="contained"
@@ -98,4 +159,4 @@ function SendMessagePage() {
   );
 }
 
-export default SendMessagePage;
+export default withSnackbar(SendMessagePage);
