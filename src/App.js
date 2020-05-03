@@ -32,7 +32,6 @@ function App() {
         });
   }, []);
 
-  // TODO: Скрывать навигацию для неавторизованного пользователя
   return (
     <div className="App">
       <header className="App-header">

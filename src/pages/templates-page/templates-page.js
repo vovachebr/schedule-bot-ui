@@ -8,7 +8,11 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import IconButton from '@material-ui/core/IconButton';
+
 import { NoteAdd } from '@material-ui/icons';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import CreateTemplateModal from './modal';
 
@@ -20,7 +24,10 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center"
     },
     buttonAdd: {
-      marginBottom: "5%"
+      marginBottom: "2%"
+    },
+    circularDiv: {
+      height: "40px"
     },
     list: {
       width: "90%"
@@ -31,10 +38,12 @@ function TemplatesPage({enqueueSnackbar}) {
   const classes = useStyles();
   const [openModal, setOpenModal] = React.useState(false);
   const [templates, setTemplates] = React.useState([]);
-  const [isLoadingTemplate, setIsLoadingTemplate] = React.useState(false);
+  const [isLoadingTemplates, setIsLoadingTemplates] = React.useState(false);
+  const [isLoadingOneTemplate, setIsLoadingOneTemplate] = React.useState(false);
+  const [editTemplate, setEditTemplate] = React.useState();
 
   const getTemplates = () => {
-    setIsLoadingTemplate(true);
+    setIsLoadingTemplates(true);
     fetch('/templates', {
       method: 'GET',
       headers: {
@@ -42,9 +51,37 @@ function TemplatesPage({enqueueSnackbar}) {
       }
     }).then(res => res.json()).then(res => {
       setTemplates(res.templates);
-      setIsLoadingTemplate(false);
+      setIsLoadingTemplates(false);
     });
   };
+
+  const getOneTemplate = (id) => {
+    setIsLoadingOneTemplate(true)
+    fetch(`/templates?id=${id}`)
+      .then(response => response.json())
+      .then(result => {
+        setEditTemplate(result.template)
+        setIsLoadingOneTemplate(false);
+        setOpenModal(true);
+      });
+  }
+
+  const deleteTemplate = (id) => {
+    setIsLoadingOneTemplate(true)
+    fetch("/templates/remove", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({id})
+      })
+      .then(response => response.json())
+      .then(res => {
+        setTemplates(res.templates);
+        enqueueSnackbar("Успешно удалено", { variant: 'success' });
+        setIsLoadingOneTemplate(false);
+      });
+  }
 
   React.useEffect(() => {
     if(!templates.length)
@@ -62,13 +99,17 @@ function TemplatesPage({enqueueSnackbar}) {
         >
         Создать шаблон сообщения
         </Button>
-        {isLoadingTemplate && <CircularProgress />}
+        {(isLoadingTemplates || isLoadingOneTemplate) ? <CircularProgress /> : <div className={classes.circularDiv}/>}
         <CreateTemplateModal 
+            template={editTemplate}
             open={openModal} 
-            onCreate={(message)=> console.log(message)}
-            onClose={() => setOpenModal(false)}
+            onClose={() => {
+              setOpenModal(false);
+              setEditTemplate(null);
+            }}
+            onUpdate={setTemplates}
         />
-        {!isLoadingTemplate && <List
+        {!isLoadingTemplates && <List
           subheader={
             <ListSubheader>
               Список шаблонов
@@ -77,8 +118,13 @@ function TemplatesPage({enqueueSnackbar}) {
           className={classes.list}
         >
           {templates.map(t => 
-          <ListItem button>
+          <ListItem key={t.id} button onClick={() => getOneTemplate(t.id)}>
             <ListItemText primary={t.title} />
+            <ListItemSecondaryAction>
+              <IconButton edge="end" aria-label="delete" onClick={() => deleteTemplate(t.id)}>
+                <DeleteIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
           </ListItem>)}
         </List>}
     </div>

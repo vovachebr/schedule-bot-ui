@@ -87,7 +87,7 @@ function SendMessagePage({enqueueSnackbar}) {
       }
     }).then(res => res.json()).then(res => {
       setIsLoadingTemplate(false);
-      setMessage(res.template.text);
+      setMessage(res.template.value);
     });
   };
   

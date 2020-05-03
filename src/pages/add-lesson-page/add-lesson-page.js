@@ -173,6 +173,7 @@ function AddLessonPage({enqueueSnackbar}) {
                 label="Дата и время занятия"
                 disablePast={true}
                 value={selectedDate}
+                error={false}
                 onChange={date => setSelectedDate(date)}
               />
             </MuiPickersUtilsProvider>
