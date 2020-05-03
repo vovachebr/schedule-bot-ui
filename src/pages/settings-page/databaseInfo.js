@@ -15,9 +15,9 @@ import { Refresh, DeleteForever } from '@material-ui/icons';
 
 const useStyles = makeStyles({
     root: {
-        marginLeft: "5%",
         minWidth: 275,
         width: 300,
+        marginBottom: "5%"
     },
     title: {
         fontSize: 14,
