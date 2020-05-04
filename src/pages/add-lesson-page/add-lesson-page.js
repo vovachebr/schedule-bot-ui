@@ -58,7 +58,6 @@ function AddLessonPage({enqueueSnackbar}) {
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [lector, setLector] = React.useState("");
   const [additional, setAdditional] = React.useState("");
-  const [imageUrl, setImageUrl] = React.useState("");
 
   const getDate = () => {
     const options = {
@@ -100,7 +99,6 @@ function AddLessonPage({enqueueSnackbar}) {
         setLecture(result.lesson.lecture);
         setLector(result.lesson.teacher);
         setAdditional(result.lesson.additional);
-        setImageUrl(result.lesson.imageUrl);
       }else{
         enqueueSnackbar(result.error || "Занятие не было найдено", { variant: 'error' });
       }
@@ -114,8 +112,7 @@ function AddLessonPage({enqueueSnackbar}) {
       time: getTime(),
       teacher: lector,
       lecture,
-      additional,
-      imageUrl
+      additional
     }
     fetch('/lessons/add', {
       method: 'POST',
@@ -133,7 +130,6 @@ function AddLessonPage({enqueueSnackbar}) {
         setSelectedDate("");
         setLector("");
         setAdditional("");
-        setImageUrl("");
       }else{
         enqueueSnackbar(result.error, { variant: 'error' });
       }
@@ -191,12 +187,6 @@ function AddLessonPage({enqueueSnackbar}) {
               value={additional}
               onChange={event => setAdditional(event.target.value)}
             />
-            <TextField
-              label="Ссылка на изображение"
-              variant="outlined"
-              value={imageUrl}
-              onChange={event => setImageUrl(event.target.value)}
-            />
           </div>
       </div>
       <div className={classes.column}>
@@ -211,7 +201,6 @@ function AddLessonPage({enqueueSnackbar}) {
 ${additional} \n\n
 Ссылку на трансляцию вы найдете в личном кабинете и в письме, которое сегодня придет вам на почту за два часа до лекции.`}
               </pre>
-        <img alt="изображение отсутствует" width="500px" height="250px" src={imageUrl} />
         <Button variant="contained" className={classes.sendButton} onClick={createLesson}>Создать занятие</Button>
       </div>
     </div>
