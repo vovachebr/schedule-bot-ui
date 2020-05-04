@@ -1,4 +1,5 @@
 import React from 'react';
+import { withSnackbar } from 'notistack';
 import clsx from 'clsx';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -6,7 +7,6 @@ import { green } from '@material-ui/core/colors';
 import Fab from '@material-ui/core/Fab';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Input from '@material-ui/core/Input';
-import FormControl from '@material-ui/core/FormControl';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -38,10 +38,17 @@ const useStyles = makeStyles((theme) => ({
       display: "flex",
       alignItems: "center",
       marginTop: "5%"
-    }
+    },
+    fabProgress: {
+      color: green[500],
+      position: 'absolute',
+      top: -3,
+      left: -3,
+      zIndex: 1,
+    },
 }));
 
-export default function ImageUploader() {
+function ImageUploader({enqueueSnackbar}) {
   const classes = useStyles();
   const [loading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
@@ -52,12 +59,29 @@ export default function ImageUploader() {
   });
 
   const saveImage = () => {
-      const formData = new FormData();
-      formData.append('avatar', inputRef.current.children[0].files[0]);
-      fetch('/images/addImage', {
-        method: 'POST',
-        body: formData
-      }).then(res => console.log(res));
+    const file = inputRef.current.children[0].files[0];
+    if(!file){
+      enqueueSnackbar("Файл не был выбран", { variant: 'error' });
+      return;
+    }
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('avatar', file);
+    fetch('/images/addImage', {
+      method: 'POST',
+      body: formData
+    }).then(res => res.json()).then(res => {
+      setLoading(false);
+      if(res.success){
+        setSuccess(true);
+        setTimeout(()=> setSuccess(false), 3000);
+        if(res.info)
+          enqueueSnackbar(res.info, { variant: 'info' });
+      }
+      else{
+        enqueueSnackbar(res.error, { variant: 'error' });
+      }
+    });
   };
 
   return (
@@ -71,7 +95,6 @@ export default function ImageUploader() {
             Используйте префиксы:<br/>
             <strong>преподаватель_</strong> - аватарки преподавателя<br/>
             <strong>фон_</strong> - фонового изображения<br/>
-            <strong>лого_</strong> - логитипа<br/>
           </Typography>
           <div className={classes.loader}>
             <Input 
@@ -90,7 +113,7 @@ export default function ImageUploader() {
               >
                 {success ? <CheckIcon /> : <SaveIcon />}
               </Fab>
-              {loading && <CircularProgress size={68} className={classes.fabProgress} />}
+              {loading && <CircularProgress size={46} className={classes.fabProgress} />}
             </div>
           </div>
         </CardContent>
@@ -98,3 +121,5 @@ export default function ImageUploader() {
     </>
   );
 }
+
+export default withSnackbar(ImageUploader);

@@ -1,9 +1,27 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
 import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
+import Fab from '@material-ui/core/Fab';
+import { DeleteForever } from '@material-ui/icons';
+
+const useStyles = makeStyles({
+  card: {
+    margin: "0 10px 0 10px"
+  },
+  backgroundsList: {
+    display: "flex",
+    flexDirection: "column"
+  },
+  backgroundImageCard: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: "5px"
+  }
+});
 
 const ExpansionPanel = withStyles({
   root: {
@@ -47,11 +65,45 @@ const ExpansionPanelDetails = withStyles((theme) => ({
 }))(MuiExpansionPanelDetails);
 
 export default function Accordion() {
+  const classes = useStyles();
   const [expanded, setExpanded] = React.useState("");
+  const [teachersList, setTeachersList] = React.useState([]);
+  const [backgroundsList, setBackgroundsList] = React.useState([]);
+  const [logo, setLogo] = React.useState();
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
+
+  React.useEffect(() => {
+    fetch('/images/getNamesByType?type=преподаватель')
+      .then(response => response.json())
+      .then(result => {
+        setTeachersList(result.data || [])
+      });
+
+    fetch('/images/getNamesByType?type=фон')
+      .then(response => response.json())
+      .then(result => {
+        setBackgroundsList(result.data || [])
+      });
+
+    fetch('/images/getNamesByType?type=лого')
+      .then(response => response.json())
+      .then(result => {
+        setLogo(result.data[0])
+      });
+  }, []);
+
+  const removeImage = (name, setter) => {
+    fetch('/images/removeImageByName?name='+name)
+    .then(response => response.json())
+    .then(result => {
+      setter(result.data || []);
+    });
+  }
+
+
   return (
     <>
     <ExpansionPanel square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
@@ -59,19 +111,33 @@ export default function Accordion() {
           <Typography>Наша команда</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          Изображения преподавателей
+          {
+            teachersList.map(t => 
+            <div key={t} className={classes.card}>
+              <img src={`/images/getImageByName?name=${t}`} width="100" height="100"/>
+              <Typography>{t}</Typography>
+              <Fab color="primary" size="small" onClick={() => removeImage(t, setTeachersList)}>
+                <DeleteForever />
+              </Fab>
+            </div>)
+          }
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel square expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
         <ExpansionPanelSummary aria-controls="panel2d-content" id="panel2d-header">
           <Typography>Наши фоны для анонсов лекций</Typography>
         </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-            sit amet blandit leo lobortis eget. Lorem ipsum dolor sit amet, consectetur adipiscing
-            elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
+        <ExpansionPanelDetails className={classes.backgroundsList}>
+          {
+            backgroundsList.map(b => 
+            <div key={b} className={classes.backgroundImageCard}>
+              <img src={`/images/getImageByName?name=${b}`} width="760" height="365"/>
+              <Typography>{b}</Typography>
+              <Fab color="primary" size="small" onClick={() => removeImage(b, setBackgroundsList)}>
+                <DeleteForever />
+              </Fab>
+            </div>)
+          }
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </>
