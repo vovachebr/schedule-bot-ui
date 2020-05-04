@@ -15,15 +15,22 @@ import { Refresh, DeleteForever } from '@material-ui/icons';
 
 const useStyles = makeStyles({
     root: {
-        minWidth: 275,
-        width: 300,
-        marginBottom: "5%"
+      width: 370,
     },
     title: {
-        fontSize: 14,
+      fontSize: 14,
+    },
+    info: {
+      height: 100
+    },
+    actions: {
+      justifyContent: "space-around"
     },
     popover: {
       pointerEvents: 'none',
+    },
+    paper: {
+      padding: 10
     }
 });
 
@@ -68,12 +75,13 @@ function DataBaseInfo() {
 
   return (
     <>
-      
       <Card className={classes.root}>
         <CardContent>
           <Typography className={classes.title} color="textSecondary" gutterBottom>
             Информация о занятом месте в базе данных
-          </Typography>{
+          </Typography>
+          <div className={classes.info}>
+          {
               !dbInfo.busySize ? 
               <CircularProgress /> :
               <>
@@ -82,29 +90,30 @@ function DataBaseInfo() {
               {Number((dbInfo.busySize / dbInfo.allSize) * 100).toFixed(4)}%
               </>
           }
+          </div>
         </CardContent>
-        <CardActions>
+        <CardActions className={classes.actions}>
           <Fab color="primary" size="small" onClick={() => {setDbInfo({}); getInfo()}}>
             <Refresh/>
           </Fab>
-          <Button
-            size="small"
-            color="primary"
-            endIcon={<DeleteForever />}
-            onMouseEnter={handlePopoverOpen}
-            onMouseLeave={handlePopoverClose}
-          >
-              Удалить лишние данные
-          </Button>
-
+          <Fab color="primary" size="small" onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>
+            <DeleteForever />
+          </Fab>
           <Popover
             open={openPopup}
             className={classes.popover}
+            classes={{
+              paper: classes.paper,
+            }}
             onClose={handlePopoverClose}
+            anchorEl={anchorEl}
             disableRestoreFocus
             anchorOrigin={{
               vertical: 'bottom',
-              horizontal: 'left',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              horizontal: 'center',
             }}
           >
           <Typography>

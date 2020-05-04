@@ -5,9 +5,6 @@ import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 
-import Users from './users';
-
-
 const ExpansionPanel = withStyles({
   root: {
     border: '1px solid rgba(0, 0, 0, .125)',
@@ -62,7 +59,7 @@ export default function Accordion() {
           <Typography>Наша команда</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Users />
+          Изображения преподавателей
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel square expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
