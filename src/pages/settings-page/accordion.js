@@ -19,6 +19,7 @@ const useStyles = makeStyles({
   backgroundImageCard: {
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: "5px"
   }
 });
