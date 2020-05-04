@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "space-between"
   },
   sendButton: {
-    marginTop: "10px",
+    marginTop: "150px",
   }
 }));
 function AddLessonPage({enqueueSnackbar}) {
