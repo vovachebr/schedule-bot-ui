@@ -33,7 +33,7 @@ const useStyles = makeStyles({
     }
 });
 
-function DataBaseInfo() {
+function DataBaseInfo({enqueueSnackbar}) {
   const classes = useStyles();
   const [dbInfo, setDbInfo] = React.useState({});
 
@@ -43,8 +43,6 @@ function DataBaseInfo() {
   const handlePopoverClose = () => setAnchorEl(null);
   const openPopup = Boolean(anchorEl);
 
-
-  
   const getInfo = () => {
     fetch(`/getDatabaseStat`)
     .then(response => response.json())
@@ -56,12 +54,23 @@ function DataBaseInfo() {
         });
       }
     });
+  };
+
+  const clearData = () => {
+    fetch(`/clearLessons`, {method: "POST"})
+    .then(response => response.json())
+    .then(result => {
+      if(result.success){
+        setDbInfo({
+          busySize:result.busySize,
+          allSize:result.allSize
+        });
+        enqueueSnackbar(`Удалено ${result.deletedLessons} анонсов, очищено ${getSize(result.clearedSize)}`, { variant: 'info' });
+      }
+    });
   }
 
-  React.useEffect(() => {
-    if(!dbInfo.busySize)
-      getInfo()
-  });
+  React.useEffect(() => getInfo(), []);
 
   const getSize = (size) => {
       const divided = size / 1024;
@@ -95,7 +104,13 @@ function DataBaseInfo() {
           <Fab color="primary" size="small" onClick={() => {setDbInfo({}); getInfo()}}>
             <Refresh/>
           </Fab>
-          <Fab color="primary" size="small" onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>
+          <Fab
+            color="primary"
+            size="small"
+            onClick={() => {setDbInfo({}); clearData();}}
+            onMouseEnter={handlePopoverOpen}
+            onMouseLeave={handlePopoverClose}
+          >
             <DeleteForever />
           </Fab>
           <Popover
@@ -116,7 +131,7 @@ function DataBaseInfo() {
             }}
           >
           <Typography>
-            Будут удалены только уже отправлены повторяющиеся анонсы к занятиям
+            Будут удалены только уже отправленыe анонсы
           </Typography>
         </Popover>
         </CardActions>

@@ -91,10 +91,7 @@ function SendMessagePage({enqueueSnackbar}) {
     });
   };
   
-  React.useEffect(() => {
-    if(!templates.length)
-      getTemplates();
-  });
+  React.useEffect(() => getTemplates(), []);
 
   return (
     <div className="SendMessagePage">
