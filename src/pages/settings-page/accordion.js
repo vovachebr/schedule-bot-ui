@@ -6,6 +6,7 @@ import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import Fab from '@material-ui/core/Fab';
+import Popover from '@material-ui/core/Popover';
 import { DeleteForever } from '@material-ui/icons';
 
 const useStyles = makeStyles({
@@ -21,6 +22,12 @@ const useStyles = makeStyles({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: "5px"
+  },
+  popover: {
+    pointerEvents: 'none',
+  },
+  paper: {
+    padding: 10
   }
 });
 
@@ -72,6 +79,11 @@ export default function Accordion() {
   const [backgroundsList, setBackgroundsList] = React.useState([]);
   const [logo, setLogo] = React.useState();
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const handlePopoverOpen = (event) => setAnchorEl(event.currentTarget);
+  const handlePopoverClose = () => setAnchorEl(null);
+  const openPopup = Boolean(anchorEl);
+
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
@@ -79,21 +91,15 @@ export default function Accordion() {
   React.useEffect(() => {
     fetch('/images/getNamesByType?type=преподаватель')
       .then(response => response.json())
-      .then(result => {
-        setTeachersList(result.data || [])
-      });
+      .then(result => setTeachersList(result.data || []));
 
     fetch('/images/getNamesByType?type=фон')
       .then(response => response.json())
-      .then(result => {
-        setBackgroundsList(result.data || [])
-      });
+      .then(result => setBackgroundsList(result.data || []));
 
     fetch('/images/getNamesByType?type=лого')
       .then(response => response.json())
-      .then(result => {
-        setLogo(result.data[0])
-      });
+      .then(result => setLogo(result.data[0].name));
   }, []);
 
   const removeImage = (name, setter) => {
@@ -114,10 +120,37 @@ export default function Accordion() {
         <ExpansionPanelDetails>
           {
             teachersList.map(t => 
-            <div key={t} className={classes.card}>
-              <img src={`/images/getImageByName?name=${t}`} width="100" height="100"/>
-              <Typography>{t}</Typography>
-              <Fab color="primary" size="small" onClick={() => removeImage(t, setTeachersList)}>
+            <div key={t.name} className={classes.card}>
+              <img 
+                src={`/images/getImageByName?name=${t.name}`}
+                width="100"
+                height="100"
+                onMouseEnter={handlePopoverOpen}
+                onMouseLeave={handlePopoverClose}
+              />
+              <Typography>{t.name}</Typography>
+              <Popover
+                open={openPopup}
+                className={classes.popover}
+                classes={{
+                  paper: classes.paper,
+                }}
+                onClose={handlePopoverClose}
+                anchorEl={anchorEl}
+                disableRestoreFocus
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  horizontal: 'center',
+                }}
+              >
+                <Typography>
+                  {t.position}
+                </Typography>
+              </Popover>
+              <Fab color="primary" size="small" onClick={() => removeImage(t.name, setTeachersList)}>
                 <DeleteForever />
               </Fab>
             </div>)
@@ -131,9 +164,9 @@ export default function Accordion() {
         <ExpansionPanelDetails className={classes.backgroundsList}>
           {
             backgroundsList.map(b => 
-            <div key={b} className={classes.backgroundImageCard}>
-              <img src={`/images/getImageByName?name=${b}`} width="760" height="365"/>
-              <Typography>{b}</Typography>
+            <div key={b.name} className={classes.backgroundImageCard}>
+              <img src={`/images/getImageByName?name=${b.name}`} width="760" height="365"/>
+              <Typography>{b.name}</Typography>
               <Fab color="primary" size="small" onClick={() => removeImage(b, setBackgroundsList)}>
                 <DeleteForever />
               </Fab>
