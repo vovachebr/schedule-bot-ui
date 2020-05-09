@@ -2,6 +2,7 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import DataBaseInfo from './databaseInfo';
+import DefaultImages from './defaultImages';
 import ImageUploader from './imageUploader';
 
 import Accordion from './accordion';
@@ -26,6 +27,7 @@ export default function SettingsPage() {
     <div className={classes.root}>
       <div className={classes.cards}>
       <DataBaseInfo />
+      <DefaultImages />
       <ImageUploader />
       </div>
       <Accordion />
