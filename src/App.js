@@ -3,7 +3,7 @@ import logo from './logo.svg';
 
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import { Http, NoteAdd, Schedule, Email, Description, Settings } from '@material-ui/icons';
+import { Http, NoteAdd, Schedule, Email, Description, Settings, RateReview } from '@material-ui/icons';
 
 import './App.css';
 import Hooks from './pages/hook-page/hook-page';
@@ -12,6 +12,7 @@ import GetLessonsPage from './pages/get-lessons-page/get-lessons-page';
 import SendMessagePage from './pages/send-message-page/send-message-page';
 import TemplatesPage from './pages/templates-page/templates-page';
 import SettingsPage from './pages/settings-page/settings-page';
+import DefaultLessonsPage from './pages/default-lessons-page/default-lessons-page';
 
 export const HooksContext = React.createContext();
 
@@ -46,6 +47,7 @@ function App() {
         <BottomNavigationAction label="Шаблоны сообщений" value="templates" icon={<Description/>} />
         <BottomNavigationAction label="Отправить" value="sendmessage" icon={<Email/>} />
         <BottomNavigationAction label="Хуки" value="hooks" icon={<Http/>} />
+        <BottomNavigationAction label="Закрепленные лекции" value="default_lectures" icon={<RateReview/>} />
         <BottomNavigationAction label="Настройки" value="settings" icon={<Settings/>} />
       </BottomNavigation>
       <HooksContext.Provider value={{
@@ -59,6 +61,7 @@ function App() {
       {value === "sendmessage" && <SendMessagePage /> }
       {value === "templates" && <TemplatesPage /> }
       {value === "hooks" && <Hooks /> }
+      {value === "default_lectures" && <DefaultLessonsPage /> }
       {value === "settings" && <SettingsPage /> }
       </HooksContext.Provider>
     </div>
