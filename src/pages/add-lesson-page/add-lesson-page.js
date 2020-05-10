@@ -92,13 +92,15 @@ function AddLessonPage({enqueueSnackbar}) {
   }
 
   const getLastLesson = () => {
-    fetch(`/lessons/getLastLecture?lecture=${lecture}`)
+    const course = hook.group.split('-')[0].toUpperCase();
+    fetch(`/lessons/getLastLecture?lecture=${lecture}&course=${course}`)
     .then(response => response.json())
     .then(result => {
       if(result.success && result.lesson){
         setLecture(result.lesson.lecture);
         setLector(result.lesson.teacher);
         setAdditional(result.lesson.additional);
+        enqueueSnackbar("Успешно найдено", { variant: 'info' });
       }else{
         enqueueSnackbar(result.error || "Занятие не было найдено", { variant: 'error' });
       }
