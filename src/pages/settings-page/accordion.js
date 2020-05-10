@@ -110,7 +110,6 @@ export default function Accordion() {
     });
   }
 
-
   return (
     <>
     <ExpansionPanel square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
