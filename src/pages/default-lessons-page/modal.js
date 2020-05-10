@@ -51,50 +51,50 @@ export default function CreateLessonModal(props){
     }}
     aria-labelledby="simple-modal-title"
     aria-describedby="simple-modal-description"
-    >
+  >
     <div className={classes.modalRoot}>
-    <TextField
-      label="Название занятия"
-      variant="outlined"
-      value={lessonName}
-      className={classes.templateInput}
-      onChange={event => setLessonName(event.target.value)}
-    />
-    <TextField
-      label="Код курса"
-      variant="outlined"
-      value={course}
-      className={classes.templateInput}
-      onChange={event => setCourse(event.target.value)}
-    />
-    <TextField
-      label="Преподаватель"
-      variant="outlined"
-      value={teacher}
-      className={classes.templateInput}
-      onChange={event => setTeacher(event.target.value)}
-    />
-    <TextareaAutosize 
-      className={classes.textArea}
-      aria-label="minimum height"
-      rowsMin={5}
-      rowsMax={20}
-      placeholder="Обсуждаемые темы"
-      value={additional}
-      onChange={event => setAdditional(event.target.value)}
-    />
-    <Button
-      variant="contained"
-      color="primary"
-      endIcon={<Check/>}
-      onClick={() => {
-        props.onCreate(lessonName, course, teacher, additional);
-        resetFields();
-      }}
-    >
-    Создать
-    </Button>
+      <TextField
+        label="Название занятия"
+        variant="outlined"
+        value={lessonName}
+        className={classes.templateInput}
+        onChange={event => setLessonName(event.target.value)}
+      />
+      <TextField
+        label="Код курса"
+        variant="outlined"
+        value={course}
+        className={classes.templateInput}
+        onChange={event => setCourse(event.target.value)}
+      />
+      <TextField
+        label="Преподаватель"
+        variant="outlined"
+        value={teacher}
+        className={classes.templateInput}
+        onChange={event => setTeacher(event.target.value)}
+      />
+      <TextareaAutosize 
+        className={classes.textArea}
+        aria-label="minimum height"
+        rowsMin={5}
+        rowsMax={20}
+        placeholder="Обсуждаемые темы"
+        value={additional}
+        onChange={event => setAdditional(event.target.value)}
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        endIcon={<Check/>}
+        onClick={() => {
+          props.onCreate(lessonName, course, teacher, additional);
+          resetFields();
+        }}
+      >
+      Создать
+      </Button>
     </div>
-    </Modal>
+  </Modal>
   );
 }

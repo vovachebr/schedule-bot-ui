@@ -39,10 +39,10 @@ function DefaultLessonsPage({enqueueSnackbar}) {
       .then(res => {
         setIsLoading(false);
         if(res.success){
-            setLessons(res.lessons);
-            enqueueSnackbar("Успешно создано", { variant: 'success' });
+          setLessons(res.lessons);
+          enqueueSnackbar("Успешно создано", { variant: 'success' });
         }else{
-            enqueueSnackbar(res.error, { variant: 'error' });
+          enqueueSnackbar(res.error, { variant: 'error' });
         }
       });
   };
@@ -82,11 +82,11 @@ function DefaultLessonsPage({enqueueSnackbar}) {
   return (
     <div className={classes.root}>
       <Button
-          className={classes.buttonAdd}
-          variant="contained"
-          color="primary"
-          endIcon={<NoteAdd/>}
-          onClick={() => setOpenModal(true)}
+        className={classes.buttonAdd}
+        variant="contained"
+        color="primary"
+        endIcon={<NoteAdd/>}
+        onClick={() => setOpenModal(true)}
       >
       Создать прикреплённое занятие
       </Button>

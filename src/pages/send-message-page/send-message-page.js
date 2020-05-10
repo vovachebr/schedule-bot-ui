@@ -101,13 +101,13 @@ function SendMessagePage({enqueueSnackbar}) {
         {data => (
           <FormControl variant="outlined" className={classes.formControl}>
             <Autocomplete
-                id="channel-combo-box"
-                options={data.hooks}
-                getOptionLabel={(h) => `Группа: "${h.group}", канал: "${h.channel}".`}
-                onChange={(event, value) => setChannel(value? value.channel : {})}
-                style={{ width: '45%' }}
-                renderInput={(params) => <TextField {...params} label="Группа/канал" variant="outlined" />}
-              />
+              id="channel-combo-box"
+              options={data.hooks}
+              getOptionLabel={(h) => `Группа: "${h.group}", канал: "${h.channel}".`}
+              onChange={(event, value) => setChannel(value? value.channel : {})}
+              style={{ width: '45%' }}
+              renderInput={(params) => <TextField {...params} label="Группа/канал" variant="outlined" />}
+            />
             {isLoadingTemplate && <CircularProgress />}
             <Autocomplete
                 id="template-combo-box"
@@ -124,7 +124,7 @@ function SendMessagePage({enqueueSnackbar}) {
                 renderInput={(params) => <TextField {...params} label="Шаблон сообщения" variant="outlined" />}
               />
           </FormControl>
-            )}
+        )}
         </HooksContext.Consumer>
         <TextField
           id="standard-multiline-static"

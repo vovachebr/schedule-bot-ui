@@ -143,66 +143,66 @@ function AddLessonPage({enqueueSnackbar}) {
     {data => (
     <div className={classes.page}>
       <div className={classes.column}>
-          <h1>Конструктор сообщения:</h1>
-          <div className={classes.messageConstructor}>
-            <FormControl variant="outlined" className={classes.formControl}>
-              <Autocomplete
-                id="group"
-                options={data.hooks}
-                getOptionLabel={(h) => `Группа: "${h.group}", канал: "${h.channel}".`}
-                onChange={(event, value) => setHook(value || {})}
-                style={{ width: '100%' }}
-                renderInput={(params) => <TextField {...params} label="Группа/канал" variant="outlined" />}
-              />
-            </FormControl>
-            <TextField label="Название занятия" variant="outlined" value={lecture} onChange={event => setLecture(event.target.value)} />
-            <Button variant="outlined" color="primary" onClick={getLastLesson}>
-              Попробовать получить уже существующее занятие
-              <Stars />
-            </Button>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <DateTimePicker
-                variant="inline"
-                format="dd-MM-yyyy HH:mm"
-                autoOk={true}
-                minutesStep={5}
-                ampm={false}
-                margin="normal"
-                label="Дата и время занятия"
-                disablePast={true}
-                value={selectedDate}
-                error={false}
-                onChange={date => setSelectedDate(date)}
-              />
-            </MuiPickersUtilsProvider>
-            <TextField
-              label="Лектор"
-              variant="outlined"
-              value={lector}
-              onChange={event => setLector(event.target.value)}
+        <h1>Конструктор сообщения:</h1>
+        <div className={classes.messageConstructor}>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <Autocomplete
+              id="group"
+              options={data.hooks}
+              getOptionLabel={(h) => `Группа: "${h.group}", канал: "${h.channel}".`}
+              onChange={(event, value) => setHook(value || {})}
+              style={{ width: '100%' }}
+              renderInput={(params) => <TextField {...params} label="Группа/канал" variant="outlined" />}
             />
-            <TextareaAutosize 
-              aria-label="minimum height"
-              rowsMin={5}
-              rowsMax={10}
-              placeholder="Обсужтаемые темы"
-              value={additional}
-              onChange={event => setAdditional(event.target.value)}
+          </FormControl>
+          <TextField label="Название занятия" variant="outlined" value={lecture} onChange={event => setLecture(event.target.value)} />
+          <Button variant="outlined" color="primary" onClick={getLastLesson}>
+            Попробовать получить уже существующее занятие
+            <Stars />
+          </Button>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <DateTimePicker
+              variant="inline"
+              format="dd-MM-yyyy HH:mm"
+              autoOk={true}
+              minutesStep={5}
+              ampm={false}
+              margin="normal"
+              label="Дата и время занятия"
+              disablePast={true}
+              value={selectedDate}
+              error={false}
+              onChange={date => setSelectedDate(date)}
             />
-          </div>
+          </MuiPickersUtilsProvider>
+          <TextField
+            label="Лектор"
+            variant="outlined"
+            value={lector}
+            onChange={event => setLector(event.target.value)}
+          />
+          <TextareaAutosize 
+            aria-label="minimum height"
+            rowsMin={5}
+            rowsMax={10}
+            placeholder="Обсужтаемые темы"
+            value={additional}
+            onChange={event => setAdditional(event.target.value)}
+          />
+        </div>
       </div>
       <div className={classes.column}>
         <h1>Результат сообщения:</h1>
         <h2>Группа: {hook.group || "не задана"}</h2>
         <h2>Сообщение:</h2>
-              <pre className={classes.pre}>
+        <pre className={classes.pre}>
 {`@channel
 Добрый день!
 Сегодня, ${getDate()}, в ${getTime()} по московскому времени состоится лекция «${lecture}».
 Ее проведет ${lector}.
 ${additional} \n\n
 Ссылку на трансляцию вы найдете в личном кабинете и в письме, которое сегодня придет вам на почту за два часа до лекции.`}
-              </pre>
+        </pre>
         <Button variant="contained" className={classes.sendButton} onClick={createLesson}>Создать занятие</Button>
       </div>
     </div>

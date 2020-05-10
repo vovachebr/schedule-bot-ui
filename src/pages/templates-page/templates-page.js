@@ -18,10 +18,10 @@ import CreateTemplateModal from './modal';
 
 const useStyles = makeStyles((theme) => ({
     template: {
-        marginTop: "2%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center"
+      marginTop: "2%",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center"
     },
     buttonAdd: {
       marginBottom: "2%"
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     list: {
       width: "90%"
     }
-  }));
+}));
 
 function TemplatesPage({enqueueSnackbar}) {
   const classes = useStyles();
@@ -64,66 +64,66 @@ function TemplatesPage({enqueueSnackbar}) {
         setIsLoadingOneTemplate(false);
         setOpenModal(true);
       });
-  }
+  };
 
   const deleteTemplate = (id) => {
     setIsLoadingOneTemplate(true)
     fetch("/templates/remove", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({id})
-      })
-      .then(response => response.json())
-      .then(res => {
-        setTemplates(res.templates);
-        enqueueSnackbar("Успешно удалено", { variant: 'success' });
-        setIsLoadingOneTemplate(false);
-      });
-  }
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({id})
+    })
+    .then(response => response.json())
+    .then(res => {
+      setTemplates(res.templates);
+      enqueueSnackbar("Успешно удалено", { variant: 'success' });
+      setIsLoadingOneTemplate(false);
+    });
+  };
 
   React.useEffect(() => getTemplates(), []);
   
   return (
     <div className={classes.template}>
-        <Button
-          className={classes.buttonAdd}
-          variant="contained"
-          color="primary"
-          endIcon={<NoteAdd/>}
-          onClick={() => setOpenModal(true)}
-        >
-        Создать шаблон сообщения
-        </Button>
-        {(isLoadingTemplates || isLoadingOneTemplate) ? <CircularProgress /> : <div className={classes.circularDiv}/>}
-        <CreateTemplateModal 
-            template={editTemplate}
-            open={openModal} 
-            onClose={() => {
-              setOpenModal(false);
-              setEditTemplate(null);
-            }}
-            onUpdate={setTemplates}
-        />
-        {!isLoadingTemplates && <List
-          subheader={
-            <ListSubheader>
-              Список шаблонов
-            </ListSubheader>
-          }
-          className={classes.list}
-        >
-          {templates.map(t => 
-          <ListItem key={t.id} button onClick={() => getOneTemplate(t.id)}>
-            <ListItemText primary={t.title} />
-            <ListItemSecondaryAction>
-              <IconButton edge="end" aria-label="delete" onClick={() => deleteTemplate(t.id)}>
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>)}
-        </List>}
+      <Button
+        className={classes.buttonAdd}
+        variant="contained"
+        color="primary"
+        endIcon={<NoteAdd/>}
+        onClick={() => setOpenModal(true)}
+      >
+      Создать шаблон сообщения
+      </Button>
+      {(isLoadingTemplates || isLoadingOneTemplate) ? <CircularProgress /> : <div className={classes.circularDiv}/>}
+      <CreateTemplateModal 
+        template={editTemplate}
+        open={openModal} 
+        onClose={() => {
+          setOpenModal(false);
+          setEditTemplate(null);
+        }}
+        onUpdate={setTemplates}
+      />
+      {!isLoadingTemplates && <List
+        subheader={
+        <ListSubheader>
+          Список шаблонов
+        </ListSubheader>
+        }
+        className={classes.list}
+      >
+      {templates.map(t => 
+        <ListItem key={t.id} button onClick={() => getOneTemplate(t.id)}>
+          <ListItemText primary={t.title} />
+          <ListItemSecondaryAction>
+            <IconButton edge="end" aria-label="delete" onClick={() => deleteTemplate(t.id)}>
+              <DeleteIcon />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>)}
+      </List>}
     </div>
   );
 }
