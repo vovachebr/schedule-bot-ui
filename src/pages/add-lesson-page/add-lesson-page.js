@@ -97,7 +97,7 @@ function AddLessonPage({enqueueSnackbar}) {
     .then(response => response.json())
     .then(result => {
       if(result.success && result.lesson){
-        setLecture(result.lesson.lecture);
+        setLecture(result.lesson.lessonName);
         setLector(result.lesson.teacher);
         setAdditional(result.lesson.additional);
         enqueueSnackbar("Успешно найдено", { variant: 'info' });
