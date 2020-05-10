@@ -77,7 +77,6 @@ export default function Accordion() {
   const [expanded, setExpanded] = React.useState("");
   const [teachersList, setTeachersList] = React.useState([]);
   const [backgroundsList, setBackgroundsList] = React.useState([]);
-  const [logo, setLogo] = React.useState();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handlePopoverOpen = (event) => setAnchorEl(event.currentTarget);
@@ -88,19 +87,17 @@ export default function Accordion() {
     setExpanded(newExpanded ? panel : false);
   };
 
-  React.useEffect(() => {
+  const getImages = () => {
     fetch('/images/getNamesByType?type=преподаватель')
-      .then(response => response.json())
-      .then(result => setTeachersList(result.data || []));
+    .then(response => response.json())
+    .then(result => setTeachersList(result.data || []));
 
-    fetch('/images/getNamesByType?type=фон')
-      .then(response => response.json())
-      .then(result => setBackgroundsList(result.data || []));
+  fetch('/images/getNamesByType?type=фон')
+    .then(response => response.json())
+    .then(result => setBackgroundsList(result.data || []));
+  }
 
-    fetch('/images/getNamesByType?type=лого')
-      .then(response => response.json())
-      .then(result => setLogo(result.data[0].name));
-  }, []);
+  React.useEffect(getImages, []);
 
   const removeImage = (name, setter) => {
     fetch('/images/removeImageByName?name='+name)
@@ -112,7 +109,7 @@ export default function Accordion() {
 
   return (
     <>
-    <ExpansionPanel square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+      <ExpansionPanel square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
         <ExpansionPanelSummary aria-controls="panel1d-content" id="panel1d-header">
           <Typography>Наша команда</Typography>
         </ExpansionPanelSummary>
