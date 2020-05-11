@@ -79,8 +79,14 @@ export default function Accordion() {
   const [backgroundsList, setBackgroundsList] = React.useState([]);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const handlePopoverOpen = (event) => setAnchorEl(event.currentTarget);
-  const handlePopoverClose = () => setAnchorEl(null);
+  const [popupText, setPopupText] = React.useState('');
+  const handlePopoverOpen = (event) => {
+    setPopupText(event.currentTarget.attributes['data-position'].value);
+    setAnchorEl(event.currentTarget);
+  };
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  }
   const openPopup = Boolean(anchorEl);
 
   const handleChange = (panel) => (event, newExpanded) => {
@@ -123,6 +129,7 @@ export default function Accordion() {
                 height="100"
                 onMouseEnter={handlePopoverOpen}
                 onMouseLeave={handlePopoverClose}
+                data-position={t.position}
               />
               <Typography>{t.name}</Typography>
               <Popover
@@ -143,7 +150,7 @@ export default function Accordion() {
                 }}
               >
                 <Typography>
-                  {t.position}
+                  {popupText}
                 </Typography>
               </Popover>
               <Fab color="primary" size="small" onClick={() => removeImage(t.name, setTeachersList)}>
