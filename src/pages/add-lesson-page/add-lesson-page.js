@@ -157,7 +157,7 @@ function AddLessonPage({enqueueSnackbar}) {
           </FormControl>
           <TextField label="Название занятия" variant="outlined" value={lecture} onChange={event => setLecture(event.target.value)} />
           <Button variant="outlined" color="primary" onClick={getLastLesson}>
-            Попробовать получить уже существующее занятие
+            Получить закреплённое занятие
             <Stars />
           </Button>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
