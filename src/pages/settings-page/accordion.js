@@ -7,7 +7,7 @@ import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import Fab from '@material-ui/core/Fab';
 import Popover from '@material-ui/core/Popover';
-import { DeleteForever } from '@material-ui/icons';
+import { DeleteForever, Clear } from '@material-ui/icons';
 
 const useStyles = makeStyles({
   card: {
@@ -25,7 +25,7 @@ const useStyles = makeStyles({
     marginBottom: "5px"
   },
   popover: {
-    pointerEvents: 'none',
+    pointerEvents: "none",
   },
   paper: {
     padding: 10
@@ -135,9 +135,7 @@ export default function Accordion() {
                 data-position={t.position}
               />
               <Typography>{t.name}</Typography>
-              <Fab color="primary" size="small" onClick={() => removeImage(t.name, setTeachersList)}>
-                <DeleteForever />
-              </Fab>
+              <Clear className={classes.crearButton} onClick={() => removeImage(t.name, setTeachersList)}/>
             </div>)
           }
           <Popover
