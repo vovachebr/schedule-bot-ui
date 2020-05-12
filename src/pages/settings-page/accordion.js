@@ -11,7 +11,8 @@ import { DeleteForever } from '@material-ui/icons';
 
 const useStyles = makeStyles({
   card: {
-    margin: "0 10px 0 10px"
+    margin: "10px",
+    width: "160px",
   },
   backgroundsList: {
     display: "flex",
@@ -69,6 +70,8 @@ const ExpansionPanelSummary = withStyles({
 const ExpansionPanelDetails = withStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
+    display: "flex",
+    flexWrap: "wrap"
   },
 }))(MuiExpansionPanelDetails);
 
@@ -132,32 +135,32 @@ export default function Accordion() {
                 data-position={t.position}
               />
               <Typography>{t.name}</Typography>
-              <Popover
-                open={openPopup}
-                className={classes.popover}
-                classes={{
-                  paper: classes.paper,
-                }}
-                onClose={handlePopoverClose}
-                anchorEl={anchorEl}
-                disableRestoreFocus
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
-                }}
-                transformOrigin={{
-                  horizontal: 'center',
-                }}
-              >
-                <Typography>
-                  {popupText}
-                </Typography>
-              </Popover>
               <Fab color="primary" size="small" onClick={() => removeImage(t.name, setTeachersList)}>
                 <DeleteForever />
               </Fab>
             </div>)
           }
+          <Popover
+            open={openPopup}
+            className={classes.popover}
+            classes={{
+              paper: classes.paper,
+            }}
+            onClose={handlePopoverClose}
+            anchorEl={anchorEl}
+            disableRestoreFocus
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              horizontal: 'center',
+            }}
+          >
+            <Typography>
+              {popupText}
+            </Typography>
+          </Popover>
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel square expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
