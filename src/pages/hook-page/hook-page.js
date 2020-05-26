@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react';
+import { withSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import MaterialTable from 'material-table';
@@ -48,7 +49,7 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-function HookPage() {
+function HookPage({enqueueSnackbar}) {
   const classes = useStyles();
 
   const columns = [
@@ -70,7 +71,7 @@ function HookPage() {
           data={data.hooks}
           options={{
             pageSize: 10,
-            pageSizeOptions:[5,10,25,50,data.hooks.length || 100]
+            pageSizeOptions:[5,10,25,50,data.hooks.length]
           }}
           editable={{
             onRowAdd: newData =>
@@ -84,8 +85,13 @@ function HookPage() {
                 })
                 .then(response => response.json())
                 .then(result => {
-                  data.updateHooks(result.hooks);
-                  resolve(result.hooks);
+                  if(result.success){
+                    data.updateHooks(result.hooks);
+                    resolve(result.hooks);
+                  }else{
+                    enqueueSnackbar(`Ошибка: ${result.error}`, { variant: 'error' });
+                    resolve();
+                  }
                 });
               }),
             onRowUpdate: (newData, oldData) =>
@@ -138,4 +144,4 @@ function HookPage() {
   );
 }
 
-export default HookPage;
+export default withSnackbar(HookPage);
