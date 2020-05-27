@@ -171,7 +171,7 @@ export default function Accordion() {
             <div key={b.name} className={classes.backgroundImageCard}>
               <img src={`/images/getImageByName?name=${b.name}`} width="760" height="365"/>
               <Typography>{b.name}</Typography>
-              <Fab color="primary" size="small" onClick={() => removeImage(b, setBackgroundsList)}>
+              <Fab color="primary" size="small" onClick={() => removeImage(b.name, setBackgroundsList)}>
                 <DeleteForever />
               </Fab>
             </div>)
