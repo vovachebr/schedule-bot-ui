@@ -129,7 +129,6 @@ function AddLessonPage({enqueueSnackbar}) {
         enqueueSnackbar("Успешно добавлено", { variant: 'success' });
         setHook("");
         setLecture("");
-        setSelectedDate("");
         setLector("");
         setAdditional("");
       }else{
@@ -149,6 +148,7 @@ function AddLessonPage({enqueueSnackbar}) {
             <Autocomplete
               id="group"
               options={data.hooks}
+              inputValue={hook && `Группа: "${hook.group}", канал: "${hook.channel}".`}
               getOptionLabel={(h) => `Группа: "${h.group}", канал: "${h.channel}".`}
               onChange={(event, value) => setHook(value || {})}
               style={{ width: '100%' }}
