@@ -54,6 +54,7 @@ function AddLessonPage({enqueueSnackbar}) {
   const classes = useStyles();
 
   const [hook, setHook] = React.useState('');
+  const [searchValue, setSearchValue] = React.useState('');
   const [lecture, setLecture] = React.useState('');
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [lector, setLector] = React.useState("");
@@ -128,6 +129,7 @@ function AddLessonPage({enqueueSnackbar}) {
       if(result.success){
         enqueueSnackbar("Успешно добавлено", { variant: 'success' });
         setHook("");
+        setSearchValue("");
         setLecture("");
         setLector("");
         setAdditional("");
@@ -148,9 +150,13 @@ function AddLessonPage({enqueueSnackbar}) {
             <Autocomplete
               id="group"
               options={data.hooks}
-              inputValue={hook && `Группа: "${hook.group}", канал: "${hook.channel}".`}
+              inputValue={searchValue}
+              onInputChange={(e, value) => setSearchValue(value)}
               getOptionLabel={(h) => `Группа: "${h.group}", канал: "${h.channel}".`}
-              onChange={(event, value) => setHook(value || {})}
+              onChange={(event, value) => {
+                setSearchValue(value && `Группа: "${value.group}", канал: "${value.channel}".` || "");
+                setHook(value || {});
+              }}
               style={{ width: '100%' }}
               renderInput={(params) => <TextField {...params} label="Группа/канал" variant="outlined" />}
             />
