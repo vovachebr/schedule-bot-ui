@@ -5,9 +5,8 @@ import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
 import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
-import Fab from '@material-ui/core/Fab';
 import Popover from '@material-ui/core/Popover';
-import { DeleteForever, Clear } from '@material-ui/icons';
+import { Clear } from '@material-ui/icons';
 
 const useStyles = makeStyles({
   card: {
@@ -20,7 +19,7 @@ const useStyles = makeStyles({
   },
   backgroundImageCard: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     alignItems: "center",
     marginBottom: "5px"
   },
@@ -84,8 +83,14 @@ export default function Accordion() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [popupText, setPopupText] = React.useState('');
   const handlePopoverOpen = (event) => {
-    setPopupText(event.currentTarget.attributes['data-position'].value);
-    setAnchorEl(event.currentTarget);
+    const positionAttribute = event.currentTarget.attributes['data-position'];
+    if(positionAttribute){
+      setPopupText(positionAttribute.value);
+      setAnchorEl(event.currentTarget);
+    }else{
+      setPopupText("Должность неизвестна");
+      setAnchorEl(event.currentTarget);
+    }
   };
   const handlePopoverClose = () => {
     setAnchorEl(null);
@@ -171,9 +176,6 @@ export default function Accordion() {
             <div key={b.name} className={classes.backgroundImageCard}>
               <img src={`/images/getImageByName?name=${b.name}`} width="760" height="365"/>
               <Typography>{b.name}</Typography>
-              <Fab color="primary" size="small" onClick={() => removeImage(b.name, setBackgroundsList)}>
-                <DeleteForever />
-              </Fab>
             </div>)
           }
         </ExpansionPanelDetails>

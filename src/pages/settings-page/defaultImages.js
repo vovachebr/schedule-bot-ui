@@ -27,7 +27,6 @@ export default function DefaultImages() {
             Обязательные изображения
           </Typography>
           <div>
-            <img src={'/images/getImageByName?name=logo'} width={250} alt="логотип"/>
             <img src={'/images/getImageByName?name=default'} width={150} alt="преподаватель без аватарки"/>
           </div>
         </CardContent>

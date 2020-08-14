@@ -91,11 +91,6 @@ function ImageUploader({enqueueSnackbar}) {
           <Typography className={classes.title} color="textSecondary" gutterBottom>
             Загрузчик изображений
           </Typography>
-          <Typography component="p" className={classes.cardText}>
-            Используйте префиксы:<br/>
-            <strong>преподаватель_</strong> - аватарки преподавателя<br/>
-            <strong>фон_</strong> - фонового изображения<br/>
-          </Typography>
           <div className={classes.loader}>
             <Input 
               className={classes.imageInput}
