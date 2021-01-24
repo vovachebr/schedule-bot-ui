@@ -1,4 +1,7 @@
-import React from 'react'
+import React from 'react';
+import clsx from 'clsx';
+import { withSnackbar } from 'notistack';
+import { green } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core/styles';
 import { makeStyles } from '@material-ui/core/styles';
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -6,6 +9,12 @@ import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import Popover from '@material-ui/core/Popover';
+import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Input from '@material-ui/core/Input';
+import CheckIcon from '@material-ui/icons/Check';
+import SaveIcon from '@material-ui/icons/Save';
 import { Clear } from '@material-ui/icons';
 
 const useStyles = makeStyles({
@@ -28,6 +37,25 @@ const useStyles = makeStyles({
   },
   paper: {
     padding: 10
+  },
+  wrapper: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: "50px"
+  },
+  uploadInut: {
+    display: "flex",
+  },
+  uploadButtonWrapper: {
+    position: 'relative',
+    height: 20
+  },
+  fabProgress: {
+    color: green[500],
+    position: 'absolute',
+    top: -3,
+    left: -3,
+    zIndex: 1,
   }
 });
 
@@ -74,14 +102,23 @@ const ExpansionPanelDetails = withStyles((theme) => ({
   },
 }))(MuiExpansionPanelDetails);
 
-export default function Accordion() {
+function Accordion({enqueueSnackbar}) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState("");
   const [teachersList, setTeachersList] = React.useState([]);
+  const [coordinatorsList, setcoordinatorsList] = React.useState([]);
   const [backgroundsList, setBackgroundsList] = React.useState([]);
+  const [coordinatorsUploadFileLoader, setcoordinatorsUploadFileLoader] = React.useState(false);
+  const [coordinatorsUploadFileLoadedSuccess, setcoordinatorsUploadFileLoadedSuccess] = React.useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [popupText, setPopupText] = React.useState('');
+  const inputRef = React.createRef();
+
+  const buttonClassname = clsx({
+    [classes.buttonSuccess]: coordinatorsUploadFileLoadedSuccess,
+  });
+
   const handlePopoverOpen = (event) => {
     const positionAttribute = event.currentTarget.attributes['data-position'];
     if(positionAttribute){
@@ -111,7 +148,37 @@ export default function Accordion() {
     .then(result => setBackgroundsList(result.data || []));
   }
 
+  const getCoordinators = () => {
+    fetch('/coordinators/')
+    .then(response => response.json())
+    .then(result => setcoordinatorsList(result.coordinators || []));
+  }
+
+  const uploadCoordinatorsFile = () => {
+    const file = inputRef.current.children[0].files[0];
+    if(!file){
+      enqueueSnackbar("Файл не был выбран", { variant: 'error' });
+      return;
+    }
+    setcoordinatorsUploadFileLoader(true);
+    const formData = new FormData();
+    formData.append('coordinators', file);
+    fetch('/coordinators/addFile', {
+      method: 'POST',
+      body: formData
+    }).then(res => res.json()).then(res => {
+      setcoordinatorsUploadFileLoader(false);
+      if(res.success){
+        setcoordinatorsUploadFileLoadedSuccess(true);
+        setTimeout(()=> setcoordinatorsUploadFileLoadedSuccess(false), 3000);
+        setcoordinatorsList(res.coordinators);
+          enqueueSnackbar("Успешно обновлено", { variant: 'success' });
+      }
+    });
+  }
+
   React.useEffect(getImages, []);
+  React.useEffect(getCoordinators, []);
 
   const removeImage = (name, setter) => {
     fetch('/images/removeImageByName?name='+name)
@@ -119,6 +186,19 @@ export default function Accordion() {
     .then(result => {
       setter(result.data || []);
     });
+  }
+
+  const downloadCoordinators = () => {
+    fetch('/coordinators/export_csv')
+    .then(response => response.blob())
+    .then(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = "coordinators.csv";
+      document.body.appendChild(a);
+      a.click();    
+      a.remove();
+  });
   }
 
   return (
@@ -168,6 +248,47 @@ export default function Accordion() {
       </ExpansionPanel>
       <ExpansionPanel square expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
         <ExpansionPanelSummary aria-controls="panel2d-content" id="panel2d-header">
+          <Typography>Наши координаторы</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails className={classes.backgroundsList}>
+          <table>
+          <thead>
+            <tr><th>Имя</th><th>Id</th><th>Курс</th></tr>
+          </thead>
+          <tbody>
+          {
+            coordinatorsList && coordinatorsList.map(c => <tr key={`${c.id}-${c.course}`}><td>{c.name}</td><td>{c.id}</td><td>{c.course}</td></tr>)
+          }
+          </tbody>
+          </table>
+          <div className={classes.wrapper}>
+            <Button variant="outlined" color="primary" onClick={downloadCoordinators}>
+              Скачать файл с координаторами
+            </Button>
+            <div className={classes.uploadInut}>
+              <Input 
+                type="file"
+                ref={inputRef}
+                inputProps={{accept:"csv"}}
+              />
+              <div className={classes.uploadButtonWrapper}>
+                <Fab
+                  size="small"
+                  aria-label="save"
+                  color="primary"
+                  className={buttonClassname}
+                  onClick={uploadCoordinatorsFile}
+                >
+                  {coordinatorsUploadFileLoadedSuccess ? <CheckIcon /> : <SaveIcon />}
+                </Fab>
+                {coordinatorsUploadFileLoader && <CircularProgress size={46} className={classes.fabProgress} />}
+              </div>
+            </div>
+          </div>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+      <ExpansionPanel square expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+        <ExpansionPanelSummary aria-controls="panel3d-content" id="panel3d-header">
           <Typography>Наши фоны для анонсов лекций</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails className={classes.backgroundsList}>
@@ -183,3 +304,5 @@ export default function Accordion() {
     </>
   );
 }
+
+export default withSnackbar(Accordion);
