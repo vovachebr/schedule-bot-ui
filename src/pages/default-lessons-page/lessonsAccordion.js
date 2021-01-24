@@ -1,14 +1,14 @@
 import React from 'react'
 
 import { withStyles } from '@material-ui/core/styles';
-import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
-import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import MuiAccordion from '@material-ui/core/Accordion';
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
+import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 
 import LessonCard from './lessonCard';
 
-const ExpansionPanel = withStyles({
+const Accordion = withStyles({
   root: {
     border: '1px solid rgba(0, 0, 0, .125)',
     boxShadow: 'none',
@@ -23,9 +23,9 @@ const ExpansionPanel = withStyles({
     },
   },
   expanded: {},
-})(MuiExpansionPanel);
+})(MuiAccordion);
   
-const ExpansionPanelSummary = withStyles({
+const AccordionSummary = withStyles({
   root: {
     backgroundColor: 'rgba(0, 0, 0, .03)',
     borderBottom: '1px solid rgba(0, 0, 0, .125)',
@@ -41,16 +41,16 @@ const ExpansionPanelSummary = withStyles({
     },
   },
   expanded: {},
-})(MuiExpansionPanelSummary);
+})(MuiAccordionSummary);
 
-const ExpansionPanelDetails = withStyles((theme) => ({
+const AccordionDetails = withStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
     display: 'flex',
     justifyContent: 'space-between',
     flexWrap: 'wrap'
   },
-}))(MuiExpansionPanelDetails);
+}))(MuiAccordionDetails);
 
 export default function LessonsAccordion({lessons, onRemoveLesson}) {
   const [expanded, setExpanded] = React.useState("");
@@ -63,14 +63,14 @@ export default function LessonsAccordion({lessons, onRemoveLesson}) {
     for (const group in lessons) {
       const groupLessons = lessons[group];
       accordions.push(
-        <ExpansionPanel square expanded={expanded === group} onChange={handleChange(group)}>
-          <ExpansionPanelSummary aria-controls={`${group}-content`} id={`${group}-header`}>
+        <Accordion square expanded={expanded === group} onChange={handleChange(group)}>
+          <AccordionSummary aria-controls={`${group}-content`} id={`${group}-header`}>
           <Typography>Группа {group}</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+          </AccordionSummary>
+          <AccordionDetails>
             {groupLessons.map(lesson => <LessonCard lesson={lesson} onRemoveLesson={onRemoveLesson}/>)}
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+          </AccordionDetails>
+        </Accordion>
       );
     }
     return accordions;

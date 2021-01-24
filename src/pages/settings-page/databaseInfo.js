@@ -126,9 +126,6 @@ function DataBaseInfo({enqueueSnackbar}) {
               vertical: 'bottom',
               horizontal: 'center',
             }}
-            transformOrigin={{
-              horizontal: 'center',
-            }}
           >
           <Typography>
             Будут удалены только уже отправленыe анонсы

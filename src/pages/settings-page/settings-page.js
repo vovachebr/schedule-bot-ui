@@ -5,7 +5,7 @@ import DataBaseInfo from './databaseInfo';
 import DefaultImages from './defaultImages';
 import ImageUploader from './imageUploader';
 
-import Accordion from './accordion';
+import SettingsAccordion from './settingsAccordion';
 
 const useStyles = makeStyles({
     root:{
@@ -30,7 +30,7 @@ export default function SettingsPage() {
       <DefaultImages />
       <ImageUploader />
       </div>
-      <Accordion />
+      <SettingsAccordion />
     </div>
   );
 }

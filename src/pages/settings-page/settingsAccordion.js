@@ -4,9 +4,9 @@ import { withSnackbar } from 'notistack';
 import { green } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core/styles';
 import { makeStyles } from '@material-ui/core/styles';
-import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
-import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import MuiAccordion from '@material-ui/core/Accordion';
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
+import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import Popover from '@material-ui/core/Popover';
 import Button from '@material-ui/core/Button';
@@ -59,7 +59,7 @@ const useStyles = makeStyles({
   }
 });
 
-const ExpansionPanel = withStyles({
+const Accordion = withStyles({
   root: {
     border: '1px solid rgba(0, 0, 0, .125)',
     boxShadow: 'none',
@@ -74,9 +74,9 @@ const ExpansionPanel = withStyles({
     },
   },
   expanded: {},
-})(MuiExpansionPanel);
+})(MuiAccordion);
 
-const ExpansionPanelSummary = withStyles({
+const AccordionSummary = withStyles({
   root: {
     backgroundColor: 'rgba(0, 0, 0, .03)',
     borderBottom: '1px solid rgba(0, 0, 0, .125)',
@@ -92,17 +92,17 @@ const ExpansionPanelSummary = withStyles({
     },
   },
   expanded: {},
-})(MuiExpansionPanelSummary);
+})(MuiAccordionSummary);
 
-const ExpansionPanelDetails = withStyles((theme) => ({
+const AccordionDetails = withStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
     display: "flex",
     flexWrap: "wrap"
   },
-}))(MuiExpansionPanelDetails);
+}))(MuiAccordionDetails);
 
-function Accordion({enqueueSnackbar}) {
+function SettingsAccordion({enqueueSnackbar}) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState("");
   const [teachersList, setTeachersList] = React.useState([]);
@@ -203,11 +203,11 @@ function Accordion({enqueueSnackbar}) {
 
   return (
     <>
-      <ExpansionPanel square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-        <ExpansionPanelSummary aria-controls="panel1d-content" id="panel1d-header">
+      <Accordion square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
           <Typography>Наша команда</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
+        </AccordionSummary>
+        <AccordionDetails>
           {
             teachersList.map(t => 
             <div key={t.name} className={classes.card}>
@@ -236,21 +236,18 @@ function Accordion({enqueueSnackbar}) {
               vertical: 'bottom',
               horizontal: 'center',
             }}
-            transformOrigin={{
-              horizontal: 'center',
-            }}
           >
             <Typography>
               {popupText}
             </Typography>
           </Popover>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-      <ExpansionPanel square expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
-        <ExpansionPanelSummary aria-controls="panel2d-content" id="panel2d-header">
+        </AccordionDetails>
+      </Accordion>
+      <Accordion square expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
           <Typography>Наши координаторы</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails className={classes.backgroundsList}>
+        </AccordionSummary>
+        <AccordionDetails className={classes.backgroundsList}>
           <table>
           <thead>
             <tr><th>Имя</th><th>Id</th><th>Курс</th></tr>
@@ -285,13 +282,13 @@ function Accordion({enqueueSnackbar}) {
               </div>
             </div>
           </div>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-      <ExpansionPanel square expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
-        <ExpansionPanelSummary aria-controls="panel3d-content" id="panel3d-header">
+        </AccordionDetails>
+      </Accordion>
+      <Accordion square expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+        <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
           <Typography>Наши фоны для анонсов лекций</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails className={classes.backgroundsList}>
+        </AccordionSummary>
+        <AccordionDetails className={classes.backgroundsList}>
           {
             backgroundsList.map(b => 
             <div key={b.name} className={classes.backgroundImageCard}>
@@ -299,10 +296,10 @@ function Accordion({enqueueSnackbar}) {
               <Typography>{b.name}</Typography>
             </div>)
           }
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+        </AccordionDetails>
+      </Accordion>
     </>
   );
 }
 
-export default withSnackbar(Accordion);
+export default withSnackbar(SettingsAccordion);
