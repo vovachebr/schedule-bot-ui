@@ -191,7 +191,7 @@ function AddLessonPage({enqueueSnackbar}) {
             aria-label="minimum height"
             rowsMin={5}
             rowsMax={10}
-            placeholder="Обсужтаемые темы"
+            placeholder="Обсуждаемые темы"
             value={additional}
             onChange={event => setAdditional(event.target.value)}
           />
