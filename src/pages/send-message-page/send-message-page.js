@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
 function SendMessagePage({enqueueSnackbar}) {
   const classes = useStyles();
 
-  const [channel, setChannel] = React.useState('');
+  const [channels, setChannel] = React.useState([]);
   const [message, setMessage] = React.useState('');
 
   const [templates, setTemplate] = React.useState([]);
@@ -50,20 +50,27 @@ function SendMessagePage({enqueueSnackbar}) {
   const [isLoadingTemplate, setIsLoadingTemplate] = React.useState(false);
 
   const sendMessage = () => {
-    if(!channel){
+    if(channels.length === 0){
       enqueueSnackbar("Канал не был выбран", { variant: 'error' });
       return;
     };
-
-    fetch('/sendInstantMessage', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({channel, text: message})
+    channels.forEach((channel) => {
+      fetch('/sendInstantMessage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({channel, text: message})
+      })
+      enqueueSnackbar("Сообщение отправлено", { variant: 'info' });
     })
-    enqueueSnackbar("Сообщение отправлено", { variant: 'info' });
+
   };
+
+  const transformValues = (event, values) => {
+    const result = values.map((value) => value.channel);
+    setChannel(result);
+  }
 
   const getTemplates = () => {
     setIsLoadingTemplate(true);
@@ -90,7 +97,7 @@ function SendMessagePage({enqueueSnackbar}) {
       setMessage(res.template.value);
     });
   };
-  
+
   React.useEffect(() => getTemplates(), []);
 
   return (
@@ -98,18 +105,19 @@ function SendMessagePage({enqueueSnackbar}) {
       <h2>Отправка мгновенных сообщений</h2>
       <div className={classes.constainer}>
         <HooksContext.Consumer>
-        {data => (
-          <FormControl variant="outlined" className={classes.formControl}>
-            <Autocomplete
-              id="channel-combo-box"
-              options={data.hooks}
-              getOptionLabel={(h) => `Группа: "${h.group}", канал: "${h.channel}".`}
-              onChange={(event, value) => setChannel(value? value.channel : {})}
-              style={{ width: '45%' }}
-              renderInput={(params) => <TextField {...params} label="Группа/канал" variant="outlined" />}
-            />
-            {isLoadingTemplate && <CircularProgress />}
-            <Autocomplete
+          {data => (
+            <FormControl variant="outlined" className={classes.formControl}>
+              <Autocomplete
+                id="channel-combo-box"
+                multiple
+                options={data.hooks}
+                getOptionLabel={(h) => `Группа: "${h.group}", канал: "${h.channel}".`}
+                onChange={transformValues}
+                style={{ width: '45%' }}
+                renderInput={(params) => <TextField {...params} label="Группа/канал" variant="outlined" />}
+              />
+              {isLoadingTemplate && <CircularProgress />}
+              <Autocomplete
                 id="template-combo-box"
                 options={templates}
                 value={selectedTemplate}
@@ -123,8 +131,8 @@ function SendMessagePage({enqueueSnackbar}) {
                 style={{ width: '45%'}}
                 renderInput={(params) => <TextField {...params} label="Шаблон сообщения" variant="outlined" />}
               />
-          </FormControl>
-        )}
+            </FormControl>
+          )}
         </HooksContext.Consumer>
         <TextField
           id="standard-multiline-static"
@@ -141,7 +149,7 @@ function SendMessagePage({enqueueSnackbar}) {
           endIcon={<Send/>}
           onClick={sendMessage}
         >
-        Отправить
+          Отправить
         </Button>
       </div>
       <pre className={classes.pre}>
