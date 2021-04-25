@@ -13,7 +13,8 @@ import {Stars} from '@material-ui/icons';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
-  DateTimePicker
+  DateTimePicker,
+  DatePicker
 } from '@material-ui/pickers';
 import {HooksContext} from '../../App';
 
@@ -167,11 +168,10 @@ function AddLessonPage({enqueueSnackbar}) {
       return delayedContainer = (
         <div className={classes.delayedDispatchContainer}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <DateTimePicker
+            <DatePicker
               variant="inline"
-              format="dd-MM-yyyy HH:mm"
+              format="dd-MM-yyyy"
               autoOk={true}
-              minutesStep={5}
               ampm={false}
               margin="normal"
               label="Дата предварительного анонса"
