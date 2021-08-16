@@ -129,7 +129,7 @@ function AddLessonPage({enqueueSnackbar}) {
       date: selectedDate.toISOString().slice(0, 10),
       time: getTime(),
       teacher: lector,
-      earlyNotificationDate: earlyNotificationDate.toISOString(),
+      earlyNotificationDate: delayedDispatch ? earlyNotificationDate.toISOString() : '',
       earlyNotificationText,
       lecture,
       additional
