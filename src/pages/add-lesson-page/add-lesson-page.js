@@ -260,7 +260,7 @@ function AddLessonPage({enqueueSnackbar}) {
             <pre className={classes.pre}>
 {`@channel
 Добрый день!
-Сегодня, ${getDate()}, в ${getTime()} по московскому времени состоится лекция «${lecture}».
+Сегодня, ${getDate()}, в ${getTime()} по московскому времени состоится занятие «${lecture}».
 Ее проведет ${lector}.
 ${additional} \n\n
 Ссылку на трансляцию вы найдете в личном кабинете и в письме, которое сегодня придет вам на почту за два часа до лекции.`}
