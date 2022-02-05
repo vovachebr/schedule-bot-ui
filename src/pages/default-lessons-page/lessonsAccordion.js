@@ -68,7 +68,7 @@ export default function LessonsAccordion({lessons, onRemoveLesson}) {
           <Typography>Группа {group}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            {groupLessons.map(lesson => <LessonCard lesson={lesson} onRemoveLesson={onRemoveLesson}/>)}
+            {groupLessons.map((lesson,i) => <LessonCard lesson={lesson} key={i} onRemoveLesson={onRemoveLesson}/>)}
           </AccordionDetails>
         </Accordion>
       );

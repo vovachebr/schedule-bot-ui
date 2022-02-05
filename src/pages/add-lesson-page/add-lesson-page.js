@@ -24,7 +24,8 @@ const useStyles = makeStyles(theme => ({
   },
   page: {
     display: "flex",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
+    marginBottom: "50px"
   },
   column: {
     display: "flex",
@@ -74,10 +75,11 @@ function AddLessonPage({enqueueSnackbar}) {
   const [earlyNotificationDate, setEarlyNotificationDate] = React.useState(new Date());
   const [earlyNotificationText, setEarlyNotificationText] = React.useState("");
   const [delayedDispatch, setDelayedDispatch] = React.useState(false);
+  const [isRecordedVideo, setIsRecordedVideo] = React.useState(false);
 
   const getDate = () => {
     const options = {
-      month: 'numeric',
+      month: '2-digit',
       day: 'numeric'
     };
     let todayDay = selectedDate.toLocaleString("ru", options);
@@ -100,6 +102,9 @@ function AddLessonPage({enqueueSnackbar}) {
   }
 
   const getTime = () => {
+    if(isRecordedVideo) {
+      return '00:00'
+    }
     const options = {
       hour: '2-digit',
       minute: '2-digit'
@@ -108,6 +113,10 @@ function AddLessonPage({enqueueSnackbar}) {
   }
 
   const getLastLesson = () => {
+    if(!hook) {
+      enqueueSnackbar("Необходимо выбрать канал для отправки", {variant: 'error'});
+      return;
+    }
     const course = hook.group.split('-')[0].toUpperCase();
     fetch(`/lessons/getLastLecture?lecture=${lecture}&course=${course}`)
       .then(response => response.json())
@@ -132,7 +141,8 @@ function AddLessonPage({enqueueSnackbar}) {
       earlyNotificationDate: delayedDispatch ? earlyNotificationDate.toISOString() : '',
       earlyNotificationText,
       lecture,
-      additional
+      additional,
+      isRecordedVideo,
     }
     fetch('/lessons/add', {
       method: 'POST',
@@ -158,8 +168,11 @@ function AddLessonPage({enqueueSnackbar}) {
   }
 
   const turnChecked = () => {
-    const result = !delayedDispatch
-    setDelayedDispatch(result)
+    setDelayedDispatch(!delayedDispatch);
+  }
+
+  const turnRecordedVideo = () => {
+    setIsRecordedVideo(!isRecordedVideo);
   }
 
   let delayedContainer = null;
@@ -199,7 +212,7 @@ function AddLessonPage({enqueueSnackbar}) {
       {data => (
         <div className={classes.page}>
           <div className={classes.column}>
-            <h1>Конструктор сообщения:</h1>
+            <h2>Конструктор сообщения:</h2>
             <div className={classes.messageConstructor}>
               <FormControl variant="outlined" className={classes.formControl}>
                 <Autocomplete
@@ -222,6 +235,16 @@ function AddLessonPage({enqueueSnackbar}) {
                 Получить закреплённое занятие
                 <Stars/>
               </Button>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isRecordedVideo}
+                    onChange={turnRecordedVideo}
+                    color="primary"
+                  />
+                }
+                label="Отправка анонса об открытии доступа на записанное занятие"
+              />
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <DateTimePicker
                   variant="inline"
@@ -254,13 +277,14 @@ function AddLessonPage({enqueueSnackbar}) {
             </div>
           </div>
           <div className={classes.column}>
-            <h1>Результат сообщения:</h1>
-            <h2>Группа: {hook.group || "не задана"}</h2>
-            <h2>Сообщение:</h2>
+            <h2>Результат сообщения:</h2>
+            <h3>Группа: {hook.group || "не задана"}</h3>
+            <h3>Сообщение:</h3>
             <pre className={classes.pre}>
 {`@channel
 Добрый день!
-Сегодня, ${getDate()}, в ${getTime()} по московскому времени состоится занятие «${lecture}».
+${!isRecordedVideo ? `Сегодня, ${getDate()}, в ${getTime()} по московскому времени состоится занятие «${lecture}».` : ''}
+${isRecordedVideo ? `Сегодня, ${getDate()}, открывается доступ к занятию «${lecture}».` : ''}
 Его проведет ${lector}.
 ${additional} \n\n
 Ссылку на трансляцию вы найдете в личном кабинете и в письме, которое сегодня придет вам на почту за два часа до лекции.`}
