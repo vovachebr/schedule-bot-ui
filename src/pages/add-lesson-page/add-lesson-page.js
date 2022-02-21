@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
   column: {
     display: "flex",
     flexDirection: "column",
-    maxWidth: "40%"
+    width: "40%",
   },
   pre: {
     display: "block",
@@ -285,9 +285,9 @@ function AddLessonPage({enqueueSnackbar}) {
 Добрый день!
 ${!isRecordedVideo ? `Сегодня, ${getDate()}, в ${getTime()} по московскому времени состоится занятие «${lecture}».` : ''}
 ${isRecordedVideo ? `Сегодня, ${getDate()}, открывается доступ к занятию «${lecture}».` : ''}
-Его проведет ${lector}.
+${!isRecordedVideo ? `Его проведет ${lector}.` : ''}
 ${additional} \n\n
-${!isRecordedVideo ? 'Ссылку на трансляцию вы найдете в личном кабинете и в письме, которое сегодня придет вам на почту за два часа до лекции.' : ''}}
+${!isRecordedVideo ? 'Ссылку на трансляцию вы найдете в личном кабинете и в письме, которое сегодня придет вам на почту за два часа до лекции.' : ''}`}
         </pre>
             <FormControlLabel
               control={
