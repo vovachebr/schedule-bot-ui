@@ -118,7 +118,7 @@ function AddLessonPage({enqueueSnackbar}) {
       return;
     }
     const course = hook.group.split('-')[0].toUpperCase();
-    fetch(`/lessons/getLastLecture?lecture=${lecture}&course=${course}`)
+    fetch(`${process.env.REACT_APP_API_URL}/lessons/getLastLecture?lecture=${lecture}&course=${course}`)
       .then(response => response.json())
       .then(result => {
         if (result.success && result.lesson) {
@@ -144,7 +144,7 @@ function AddLessonPage({enqueueSnackbar}) {
       additional,
       isRecordedVideo,
     }
-    fetch('/lessons/add', {
+    fetch(`${process.env.REACT_APP_API_URL}/lessons/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

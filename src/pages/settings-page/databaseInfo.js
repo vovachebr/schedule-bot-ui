@@ -44,7 +44,7 @@ function DataBaseInfo({enqueueSnackbar}) {
   const openPopup = Boolean(anchorEl);
 
   const getInfo = () => {
-    fetch(`/getDatabaseStat`)
+    fetch(`${process.env.REACT_APP_API_URL}/getDatabaseStat`)
     .then(response => response.json())
     .then(result => {
       if(result.success){
@@ -57,7 +57,7 @@ function DataBaseInfo({enqueueSnackbar}) {
   };
 
   const clearData = () => {
-    fetch(`/clearLessons`, {method: "POST"})
+    fetch(`${process.env.REACT_APP_API_URL}/clearLessons`, {method: "POST"})
     .then(response => response.json())
     .then(result => {
       if(result.success){

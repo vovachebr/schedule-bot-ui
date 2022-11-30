@@ -67,7 +67,7 @@ function ImageUploader({enqueueSnackbar}) {
     setLoading(true);
     const formData = new FormData();
     formData.append('avatar', file);
-    fetch('/images/addImage', {
+    fetch(`${process.env.REACT_APP_API_URL}/images/addImage`, {
       method: 'POST',
       body: formData
     }).then(res => res.json()).then(res => {

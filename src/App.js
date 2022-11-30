@@ -26,7 +26,7 @@ function App() {
   };
 
   React.useEffect(() => {
-    fetch('/hooks')
+    fetch(`${process.env.REACT_APP_API_URL}/hooks`)
         .then(response => response.json())
         .then(result => {
           setHooks(result.hooks || [])

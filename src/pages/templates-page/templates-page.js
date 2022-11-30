@@ -44,7 +44,7 @@ function TemplatesPage({enqueueSnackbar}) {
 
   const getTemplates = () => {
     setIsLoadingTemplates(true);
-    fetch('/templates', {
+    fetch(`${process.env.REACT_APP_API_URL}/templates`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ function TemplatesPage({enqueueSnackbar}) {
 
   const getOneTemplate = (id) => {
     setIsLoadingOneTemplate(true)
-    fetch(`/templates?id=${id}`)
+    fetch(`${process.env.REACT_APP_API_URL}/templates?id=${id}`)
       .then(response => response.json())
       .then(result => {
         setEditTemplate(result.template)
@@ -68,7 +68,7 @@ function TemplatesPage({enqueueSnackbar}) {
 
   const deleteTemplate = (id) => {
     setIsLoadingOneTemplate(true)
-    fetch("/templates/remove", {
+    fetch(`${process.env.REACT_APP_API_URL}/templates/remove`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
