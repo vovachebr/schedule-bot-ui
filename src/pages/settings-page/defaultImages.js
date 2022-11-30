@@ -27,7 +27,7 @@ export default function DefaultImages() {
             Обязательные изображения
           </Typography>
           <div>
-            <img src={'/images/getImageByName?name=default'} width={150} alt="преподаватель без аватарки"/>
+            <img src={`${process.env.REACT_APP_API_URL}/images/getImageByName?name=default`} width={150} alt="преподаватель без аватарки"/>
           </div>
         </CardContent>
       </Card>

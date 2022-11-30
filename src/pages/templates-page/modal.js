@@ -70,7 +70,7 @@ function CreateTemplateModal(props){
         date: selectedDate && new Date(selectedDate).toISOString().slice(0,10)
       }
     }
-    fetch('/templates/update', {
+    fetch(`${process.env.REACT_APP_API_URL}/templates/update`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
