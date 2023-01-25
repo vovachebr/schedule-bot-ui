@@ -139,17 +139,17 @@ function SettingsAccordion({enqueueSnackbar}) {
   };
 
   const getImages = () => {
-    fetch('/images/getNamesByType?type=преподаватель')
+    fetch(`${process.env.REACT_APP_API_URL}/images/getNamesByType?type=преподаватель`)
     .then(response => response.json())
     .then(result => setTeachersList(result.data || []));
 
-  fetch('/images/getNamesByType?type=фон')
+  fetch(`${process.env.REACT_APP_API_URL}/images/getNamesByType?type=фон`)
     .then(response => response.json())
     .then(result => setBackgroundsList(result.data || []));
   }
 
   const getCoordinators = () => {
-    fetch('/coordinators/')
+    fetch(`${process.env.REACT_APP_API_URL}/coordinators/`)
     .then(response => response.json())
     .then(result => setcoordinatorsList(result.coordinators || []));
   }
@@ -163,7 +163,7 @@ function SettingsAccordion({enqueueSnackbar}) {
     setcoordinatorsUploadFileLoader(true);
     const formData = new FormData();
     formData.append('coordinators', file);
-    fetch('/coordinators/addFile', {
+    fetch(`${process.env.REACT_APP_API_URL}/coordinators/addFile`, {
       method: 'POST',
       body: formData
     }).then(res => res.json()).then(res => {
@@ -181,7 +181,7 @@ function SettingsAccordion({enqueueSnackbar}) {
   React.useEffect(getCoordinators, []);
 
   const removeImage = (name, setter) => {
-    fetch('/images/removeImageByName?name='+name)
+    fetch(`${process.env.REACT_APP_API_URL}/images/removeImageByName?name=`+name)
     .then(response => response.json())
     .then(result => {
       setter(result.data || []);
@@ -189,7 +189,7 @@ function SettingsAccordion({enqueueSnackbar}) {
   }
 
   const downloadCoordinators = () => {
-    fetch('/coordinators/export_csv')
+    fetch(`${process.env.REACT_APP_API_URL}/coordinators/export_csv`)
     .then(response => response.blob())
     .then(blob => {
       const a = document.createElement('a');
@@ -212,7 +212,7 @@ function SettingsAccordion({enqueueSnackbar}) {
             teachersList.map(t => 
             <div key={t.name} className={classes.card}>
               <img 
-                src={`/images/getImageByName?name=${t.name}`}
+                src={`${process.env.REACT_APP_API_URL}/images/getImageByName?name=${t.name}`}
                 width="100"
                 height="100"
                 onMouseEnter={handlePopoverOpen}
@@ -292,7 +292,7 @@ function SettingsAccordion({enqueueSnackbar}) {
           {
             backgroundsList.map(b => 
             <div key={b.name} className={classes.backgroundImageCard}>
-              <img src={`/images/getImageByName?name=${b.name}`} width="760" height="365"/>
+              <img src={`${process.env.REACT_APP_API_URL}/images/getImageByName?name=${b.name}`} width="760" height="365"/>
               <Typography>{b.name}</Typography>
               <Fab color="primary" size="small" onClick={() => removeImage(b.name, setBackgroundsList)}>
                 <DeleteForever />

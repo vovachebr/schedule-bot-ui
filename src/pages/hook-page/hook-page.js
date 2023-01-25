@@ -80,7 +80,7 @@ function HookPage({enqueueSnackbar}) {
                 ...newData
               }
               return new Promise(resolve => {
-                fetch('/hooks/update', {
+                fetch(`${process.env.REACT_APP_API_URL}/hooks/update`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ function HookPage({enqueueSnackbar}) {
                 body.value = oldData.value; 
               } 
 
-              fetch('/hooks/remove', {
+              fetch(`${process.env.REACT_APP_API_URL}/hooks/remove`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',

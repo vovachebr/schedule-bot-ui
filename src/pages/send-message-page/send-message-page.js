@@ -64,7 +64,7 @@ function SendMessagePage({enqueueSnackbar}) {
       return;
     };
     channels.forEach((channel) => {
-      fetch('/sendInstantMessage', {
+      fetch(`${process.env.REACT_APP_API_URL}/sendInstantMessage`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ function SendMessagePage({enqueueSnackbar}) {
 
   const getTemplates = () => {
     setIsLoadingTemplate(true);
-    fetch('/templates', {
+    fetch(`${process.env.REACT_APP_API_URL}/templates`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ function SendMessagePage({enqueueSnackbar}) {
 
   const getTemplate = (template) => {
     setIsLoadingTemplate(true);
-    fetch(`/templates?id=${template.id}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/templates?id=${template.id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

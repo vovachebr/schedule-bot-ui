@@ -59,7 +59,7 @@ function GetLessonsPage({enqueueSnackbar}) {
   const classes = useStyles();
 
   const sendLessonNotification = (rowData) => {
-    fetch('/lessons/sendNotification', {
+    fetch(`${process.env.REACT_APP_API_URL}/lessons/sendNotification`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ function GetLessonsPage({enqueueSnackbar}) {
   ];
 
   const getLessons = (isSendLessons) => {
-    fetch(`/lessons?isSent=${isSendLessons}`)
+    fetch(`${process.env.REACT_APP_API_URL}/lessons?isSent=${isSendLessons}`)
     .then(response => response.json())
     .then(result => setLessons(result.lessons));
   }
@@ -130,7 +130,7 @@ function GetLessonsPage({enqueueSnackbar}) {
         editable={{
           onRowDelete: oldData =>
           new Promise(resolve => {
-            fetch('/lessons/remove', {
+            fetch(`${process.env.REACT_APP_API_URL}/lessons/remove`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ function GetLessonsPage({enqueueSnackbar}) {
           }),
           onRowUpdate: (newData, oldData) =>
           new Promise(resolve => {
-            fetch('/lessons/update', {
+            fetch(`${process.env.REACT_APP_API_URL}/lessons/update`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

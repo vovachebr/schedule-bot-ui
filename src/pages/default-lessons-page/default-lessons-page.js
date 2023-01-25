@@ -28,7 +28,7 @@ function DefaultLessonsPage({enqueueSnackbar}) {
 
   const createDefaultLesson = (lessonName, course, teacher, additional) => {
     setIsLoading(true);
-    fetch("/defaultLessons/create", {
+    fetch(`${process.env.REACT_APP_API_URL}/defaultLessons/create`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ function DefaultLessonsPage({enqueueSnackbar}) {
   };
   const getTemplates = () => {
     setIsLoading(true);
-    fetch("/defaultLessons/")
+    fetch(`${process.env.REACT_APP_API_URL}/defaultLessons/`)
       .then(response => response.json())
       .then(res => {
         setLessons(res.lessons);
@@ -58,7 +58,7 @@ function DefaultLessonsPage({enqueueSnackbar}) {
 
   const removeLesson = (id) => {
     setIsLoading(true);
-    fetch("/defaultLessons/remove", {
+    fetch(`${process.env.REACT_APP_API_URL}/defaultLessons/remove`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
