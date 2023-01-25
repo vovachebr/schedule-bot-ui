@@ -5,8 +5,6 @@ import {makeStyles} from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {Stars} from '@material-ui/icons';
@@ -14,7 +12,6 @@ import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
   DateTimePicker,
-  DatePicker
 } from '@material-ui/pickers';
 import {HooksContext} from '../../App';
 
@@ -31,6 +28,7 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     width: "40%",
+    minHeight: "900px",
   },
   pre: {
     display: "block",
@@ -51,15 +49,10 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "space-between"
   },
   sendButton: {
-    marginTop: "163px",
+    marginTop: "20px",
   },
-  sendButton2: {
-    marginTop: "10px"
-  },
-  delayedDispatchContainer: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: "column"
+  liHelper: {
+    textAlign: "initial"
   }
 }));
 
@@ -72,10 +65,14 @@ function AddLessonPage({enqueueSnackbar}) {
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [lector, setLector] = React.useState("");
   const [additional, setAdditional] = React.useState("");
-  const [earlyNotificationDate, setEarlyNotificationDate] = React.useState(new Date());
-  const [earlyNotificationText, setEarlyNotificationText] = React.useState("");
-  const [delayedDispatch, setDelayedDispatch] = React.useState(false);
-  const [isRecordedVideo, setIsRecordedVideo] = React.useState(false);
+  const [backgroundsList, setBackgroundsList] = React.useState([]);
+  const [imageNameToSend, setImageNameToSend] = React.useState("");
+  const [templateToSend, setTemplateToSend] = React.useState(`<@&${process.env.REACT_APP_STUDENT_TAG_ID}> Добрый день!
+Сегодня, {date}, в {time} по московскому времени состоится занятие «{lesson}». Его проведет {lector}.
+{addidional}
+
+Ссылку на трансляцию вы найдете в личном кабинете и в письме, которое сегодня придет вам на почту за два часа до лекции.
+`);
 
   const getDate = () => {
     const options = {
@@ -101,10 +98,23 @@ function AddLessonPage({enqueueSnackbar}) {
     return splittedData.join(' ');
   }
 
+  React.useEffect(() => {
+    fetch('/images/getNamesByType?type=фон')
+    .then(response => response.json())
+    .then(result => setBackgroundsList(result.data || []));
+  }, []);
+
+  const convertText = () => {
+
+    return templateToSend
+      .replace(/{date}/g, getDate())
+      .replace(/{time}/g, getTime())
+      .replace(/{lesson}/g, lecture)
+      .replace(/{lector}/g, lector)
+      .replace(/{addidional}/g, additional);
+  }
+
   const getTime = () => {
-    if(isRecordedVideo) {
-      return '00:00'
-    }
     const options = {
       hour: '2-digit',
       minute: '2-digit'
@@ -123,7 +133,7 @@ function AddLessonPage({enqueueSnackbar}) {
       .then(result => {
         if (result.success && result.lesson) {
           setLecture(result.lesson.lessonName);
-          setLector(result.lesson.teacher);
+          setLector(result.lesson.lector);
           setAdditional(result.lesson.additional);
           enqueueSnackbar("Успешно найдено", {variant: 'info'});
         } else {
@@ -133,16 +143,19 @@ function AddLessonPage({enqueueSnackbar}) {
   }
 
   const createLesson = () => {
+    if(!hook.group) {
+      enqueueSnackbar("Нельзя создать анонс без группы", {variant: 'error'});
+      return;
+    }
+
     const data = {
       group: hook.group,
+      text: convertText(templateToSend),
+      image: imageNameToSend,
       date: selectedDate.toISOString().slice(0, 10),
       time: getTime(),
       teacher: lector,
-      earlyNotificationDate: delayedDispatch ? earlyNotificationDate.toISOString() : '',
-      earlyNotificationText,
-      lecture,
-      additional,
-      isRecordedVideo,
+      lecture
     }
     fetch('/lessons/add', {
       method: 'POST',
@@ -160,51 +173,11 @@ function AddLessonPage({enqueueSnackbar}) {
           setLecture("");
           setLector("");
           setAdditional("");
-          setEarlyNotificationText("");
+          setImageNameToSend("");
         } else {
           enqueueSnackbar(result.error, {variant: 'error'});
         }
       });
-  }
-
-  const turnChecked = () => {
-    setDelayedDispatch(!delayedDispatch);
-  }
-
-  const turnRecordedVideo = () => {
-    setIsRecordedVideo(!isRecordedVideo);
-  }
-
-  let delayedContainer = null;
-  const showDelayedContainer = () => {
-    if (delayedDispatch) {
-      return delayedContainer = (
-        <div className={classes.delayedDispatchContainer}>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <DatePicker
-              variant="inline"
-              format="dd-MM-yyyy"
-              autoOk={true}
-              ampm={false}
-              margin="normal"
-              label="Дата предварительного анонса"
-              disablePast={true}
-              value={earlyNotificationDate}
-              error={false}
-              onChange={date => setEarlyNotificationDate(date)}
-            />
-          </MuiPickersUtilsProvider>
-          <TextareaAutosize
-            aria-label="minimum height"
-            rowsMin={5}
-            rowsMax={10}
-            placeholder="Текст сообщения"
-            value={earlyNotificationText}
-            onChange={event => setEarlyNotificationText(event.target.value)}
-          />
-        </div>
-      );
-    }
   }
 
   return (
@@ -229,22 +202,16 @@ function AddLessonPage({enqueueSnackbar}) {
                   renderInput={(params) => <TextField {...params} label="Группа/канал" variant="outlined"/>}
                 />
               </FormControl>
-              <TextField label="Название занятия" variant="outlined" value={lecture}
-                         onChange={event => setLecture(event.target.value)}/>
+              <TextField
+                label="Название занятия"
+                variant="outlined"
+                value={lecture}
+                onChange={event => setLecture(event.target.value)}
+              />
               <Button variant="outlined" color="primary" onClick={getLastLesson}>
                 Получить закреплённое занятие
                 <Stars/>
               </Button>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={isRecordedVideo}
-                    onChange={turnRecordedVideo}
-                    color="primary"
-                  />
-                }
-                label="Отправка анонса об открытии доступа на записанное занятие"
-              />
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <DateTimePicker
                   variant="inline"
@@ -274,35 +241,43 @@ function AddLessonPage({enqueueSnackbar}) {
                 value={additional}
                 onChange={event => setAdditional(event.target.value)}
               />
+              <FormControl variant="outlined" className={classes.formControl}>
+                <Autocomplete
+                  id="image-dropdown"
+                  options={backgroundsList}
+                  getOptionLabel={image => image.name}
+                  onChange={(event, value) => setImageNameToSend(value.name)}
+                  style={{width: '100%'}}
+                  renderInput={(params) => <TextField {...params} label="Изображение для отправки" variant="outlined"/>}
+                />
+              </FormControl>
+              <TextareaAutosize
+                aria-label="minimum height"
+                rowsMin={5}
+                rowsMax={10}
+                placeholder="Тест для отправки"
+                value={templateToSend}
+                onChange={event => setTemplateToSend(event.target.value)}
+              />
+              <ul className={classes.liHelper}>
+                <li>{`<@&${process.env.REACT_APP_STUDENT_TAG_ID}> для тега всех студентов`}</li>
+                <li>{`{date} для добавления даты занятия`}</li>
+                <li>{`{time} для добавления времени занятия`}</li>
+                <li>{`{lesson} для добавления темы занятия`}</li>
+                <li>{`{lector} для добавления ФИ преподавателя`}</li>
+                <li>{`{addidional} для добавления обсуждаемых тем`}</li>
+              </ul>
             </div>
           </div>
           <div className={classes.column}>
             <h2>Результат сообщения:</h2>
             <h3>Группа: {hook.group || "не задана"}</h3>
             <h3>Сообщение:</h3>
-            <pre className={classes.pre}>
-{`@channel
-Добрый день!
-${!isRecordedVideo ? `Сегодня, ${getDate()}, в ${getTime()} по московскому времени состоится занятие «${lecture}».` : ''}
-${isRecordedVideo ? `Сегодня, ${getDate()}, открывается доступ к занятию «${lecture}».` : ''}
-${!isRecordedVideo ? `Его проведет ${lector}.` : ''}
-${additional} \n\n
-${!isRecordedVideo ? 'Ссылку на трансляцию вы найдете в личном кабинете и в письме, которое сегодня придет вам на почту за два часа до лекции.' : ''}`}
-        </pre>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={delayedDispatch}
-                  onChange={turnChecked}
-                  color="primary"
-                />
-              }
-              label="Отложенная отправка"
-            />
-            {showDelayedContainer()}
+            <pre className={classes.pre}>{convertText(templateToSend)}</pre>
+            {imageNameToSend && <img src={`/images/getImageByName?name=${imageNameToSend}`}/>}
             <Button
               variant="contained"
-              className={delayedDispatch ? classes.sendButton2 : classes.sendButton}
+              className={classes.sendButton}
               onClick={createLesson}>Создать занятие</Button>
           </div>
         </div>

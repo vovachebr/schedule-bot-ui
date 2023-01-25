@@ -84,6 +84,7 @@ function GetLessonsPage({enqueueSnackbar}) {
     { title: 'Время', field: 'time' },
     { title: 'Группа', field: 'group' },
     { title: 'Лектор', field: 'teacher' },
+    { title: 'Изображение', field: 'image' },
     {
       title: 'Опубликовать сейчас',
       render: rowData => 

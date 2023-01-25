@@ -15,7 +15,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Input from '@material-ui/core/Input';
 import CheckIcon from '@material-ui/icons/Check';
 import SaveIcon from '@material-ui/icons/Save';
-import { Clear } from '@material-ui/icons';
+import { DeleteForever, Clear } from '@material-ui/icons';
 
 const useStyles = makeStyles({
   card: {
@@ -294,6 +294,9 @@ function SettingsAccordion({enqueueSnackbar}) {
             <div key={b.name} className={classes.backgroundImageCard}>
               <img src={`/images/getImageByName?name=${b.name}`} width="760" height="365"/>
               <Typography>{b.name}</Typography>
+              <Fab color="primary" size="small" onClick={() => removeImage(b.name, setBackgroundsList)}>
+                <DeleteForever />
+              </Fab>
             </div>)
           }
         </AccordionDetails>

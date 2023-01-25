@@ -30,7 +30,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const tableIcons = {
-  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
   Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
   Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
@@ -53,7 +52,6 @@ function HookPage({enqueueSnackbar}) {
   const classes = useStyles();
 
   const columns = [
-  { title: 'Значение', field: 'value', cellStyle: {width:"50%", wordBreak: "break-all"}},
     { title: 'Канал', field: 'channel' },
     { title: 'Группа', field: 'group' },
     { title: 'ID Канала/Чата', field: 'channelId' },
@@ -74,26 +72,6 @@ function HookPage({enqueueSnackbar}) {
             pageSizeOptions:[5,10,25,50,data.hooks.length]
           }}
           editable={{
-            onRowAdd: newData =>
-              new Promise(resolve => {
-                fetch('/hooks/add', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(newData)
-                })
-                .then(response => response.json())
-                .then(result => {
-                  if(result.success){
-                    data.updateHooks(result.hooks);
-                    resolve(result.hooks);
-                  }else{
-                    enqueueSnackbar(`Ошибка: ${result.error}`, { variant: 'error' });
-                    resolve();
-                  }
-                });
-              }),
             onRowUpdate: (newData, oldData) =>
             {
               const body = {

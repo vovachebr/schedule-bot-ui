@@ -44,10 +44,19 @@ function SendMessagePage({enqueueSnackbar}) {
 
   const [channels, setChannel] = React.useState([]);
   const [message, setMessage] = React.useState('');
+  const [imageLink, setImageLink] = React.useState("");
+  const [imageFromDB, setImageFromDB] = React.useState(null);
+  const [backgroundsList, setBackgroundsList] = React.useState([]);
 
   const [templates, setTemplate] = React.useState([]);
   const [selectedTemplate, setSelectedTemplate] = React.useState(null);
   const [isLoadingTemplate, setIsLoadingTemplate] = React.useState(false);
+
+  React.useEffect(() => {
+    fetch('/images/getNamesByType?type=фон')
+    .then(response => response.json())
+    .then(result => setBackgroundsList(result.data || []));
+  }, []);
 
   const sendMessage = () => {
     if(channels.length === 0){
@@ -60,7 +69,7 @@ function SendMessagePage({enqueueSnackbar}) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({channel, text: message})
+        body: JSON.stringify({channel, text: message, imageLink, imageName: imageFromDB && imageFromDB.name})
       })
       enqueueSnackbar("Сообщение отправлено", { variant: 'info' });
     })
@@ -142,6 +151,29 @@ function SendMessagePage({enqueueSnackbar}) {
           value={message}
           onInput={e => {setMessage(e.target.value); setSelectedTemplate(null)}}
         />
+        <FormControl variant="outlined" className={classes.formControl}>
+          <TextField
+            label="Добавить изображение"
+            value={imageLink}
+            style={{ width: '45%' }}
+            onInput={e => {
+              setImageLink(e.target.value);
+              setImageFromDB(null);
+            }}
+          />
+          <Autocomplete
+            id="image-dropdown"
+            options={backgroundsList}
+            value={imageFromDB}
+            getOptionLabel={image => image ? image.name : ""}
+            onChange={(event, value) => {
+              setImageFromDB(value);
+              setImageLink("");
+            }}
+            style={{ width: '45%' }}
+            renderInput={(params) => <TextField {...params} label="Изображение для отправки" variant="outlined"/>}
+          />
+        </FormControl>
         <Button
           variant="contained"
           color="primary"
@@ -154,8 +186,9 @@ function SendMessagePage({enqueueSnackbar}) {
       </div>
       <pre className={classes.pre}>
         {`
-        Оповещения для слака:
+        Оповещения для дискорда:
         <@U024BE7LH> - оповещение пользователя по ID
+        <@&1042823819645165659> - оповеещение группы пользователей
         @here - оповещение только активных участников канала
         @channel - оповещение всех участников канала
         @everyone - оповещение всех участников из канала #general (т.е. каждый не приглашенный пользователь).`}
