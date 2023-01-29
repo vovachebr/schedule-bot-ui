@@ -246,7 +246,7 @@ function AddLessonPage({enqueueSnackbar}) {
                   id="image-dropdown"
                   options={backgroundsList}
                   getOptionLabel={image => image.name}
-                  onChange={(event, value) => setImageNameToSend(value.name)}
+                  onChange={(event, value) => setImageNameToSend(value && value.name)}
                   style={{width: '100%'}}
                   renderInput={(params) => <TextField {...params} label="Изображение для отправки" variant="outlined"/>}
                 />
