@@ -99,7 +99,7 @@ function AddLessonPage({enqueueSnackbar}) {
   }
 
   React.useEffect(() => {
-    fetch('/images/getNamesByType?type=фон')
+    fetch('/api/images/getNamesByType?type=фон')
     .then(response => response.json())
     .then(result => setBackgroundsList(result.data || []));
   }, []);
