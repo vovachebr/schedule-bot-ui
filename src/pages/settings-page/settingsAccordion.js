@@ -105,44 +105,22 @@ const AccordionDetails = withStyles((theme) => ({
 function SettingsAccordion({enqueueSnackbar}) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState("");
-  const [teachersList, setTeachersList] = React.useState([]);
   const [coordinatorsList, setcoordinatorsList] = React.useState([]);
   const [backgroundsList, setBackgroundsList] = React.useState([]);
   const [coordinatorsUploadFileLoader, setcoordinatorsUploadFileLoader] = React.useState(false);
   const [coordinatorsUploadFileLoadedSuccess, setcoordinatorsUploadFileLoadedSuccess] = React.useState(false);
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [popupText, setPopupText] = React.useState('');
   const inputRef = React.createRef();
 
   const buttonClassname = clsx({
     [classes.buttonSuccess]: coordinatorsUploadFileLoadedSuccess,
   });
 
-  const handlePopoverOpen = (event) => {
-    const positionAttribute = event.currentTarget.attributes['data-position'];
-    if(positionAttribute){
-      setPopupText(positionAttribute.value);
-      setAnchorEl(event.currentTarget);
-    }else{
-      setPopupText("Должность неизвестна");
-      setAnchorEl(event.currentTarget);
-    }
-  };
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  }
-  const openPopup = Boolean(anchorEl);
-
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
 
   const getImages = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/images/getNamesByType?type=преподаватель`)
-    .then(response => response.json())
-    .then(result => setTeachersList(result.data || []));
-
   fetch(`${process.env.REACT_APP_API_URL}/images/getNamesByType?type=фон`)
     .then(response => response.json())
     .then(result => setBackgroundsList(result.data || []));
@@ -203,46 +181,6 @@ function SettingsAccordion({enqueueSnackbar}) {
 
   return (
     <>
-      <Accordion square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <Typography>Наша команда</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          {
-            teachersList.map(t => 
-            <div key={t.name} className={classes.card}>
-              <img 
-                src={`${process.env.REACT_APP_API_URL}/images/getImageByName?name=${t.name}`}
-                width="100"
-                height="100"
-                onMouseEnter={handlePopoverOpen}
-                onMouseLeave={handlePopoverClose}
-                data-position={t.position}
-              />
-              <Typography>{t.name}</Typography>
-              <Clear className={classes.crearButton} onClick={() => removeImage(t.name, setTeachersList)}/>
-            </div>)
-          }
-          <Popover
-            open={openPopup}
-            className={classes.popover}
-            classes={{
-              paper: classes.paper,
-            }}
-            onClose={handlePopoverClose}
-            anchorEl={anchorEl}
-            disableRestoreFocus
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-          >
-            <Typography>
-              {popupText}
-            </Typography>
-          </Popover>
-        </AccordionDetails>
-      </Accordion>
       <Accordion square expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
         <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
           <Typography>Наши координаторы</Typography>

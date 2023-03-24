@@ -53,7 +53,7 @@ function SendMessagePage({enqueueSnackbar}) {
   const [isLoadingTemplate, setIsLoadingTemplate] = React.useState(false);
 
   React.useEffect(() => {
-    fetch('/api/images/getNamesByType?type=фон')
+    fetch(`${process.env.REACT_APP_API_URL}/images/getNamesByType?type=фон`)
     .then(response => response.json())
     .then(result => setBackgroundsList(result.data || []));
   }, []);

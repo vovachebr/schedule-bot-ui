@@ -54,26 +54,21 @@ const AccordionDetails = withStyles((theme) => ({
 
 export default function LessonsAccordion({lessons, onRemoveLesson}) {
   const [expanded, setExpanded] = React.useState("");
-  const handleChange = (panel) => (event, newExpanded) => {
+  const handleChange = React.useCallback((panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
-  };
+  }, [setExpanded]);
 
-  const printAccordions = () => {
-    const accordions = [];
-    for (const group in lessons) {
-      const groupLessons = lessons[group];
-      accordions.push(
-        <Accordion square expanded={expanded === group} onChange={handleChange(group)}>
-          <AccordionSummary aria-controls={`${group}-content`} id={`${group}-header`}>
-          <Typography>Группа {group}</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            {groupLessons.map((lesson,i) => <LessonCard lesson={lesson} key={i} onRemoveLesson={onRemoveLesson}/>)}
-          </AccordionDetails>
-        </Accordion>
-      );
-    }
-    return accordions;
-  }
-  return (printAccordions());
+  return Object.keys(lessons).map(group => {
+    const groupLessons = lessons[group];
+    return (
+      <Accordion square expanded={expanded === group} key={group} onChange={handleChange(group)}>
+        <AccordionSummary aria-controls={`${group}-content`} id={`${group}-header`}>
+        <Typography>Группа {group}</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {groupLessons.map((lesson,i) => <LessonCard lesson={lesson} key={i} onRemoveLesson={onRemoveLesson}/>)}
+        </AccordionDetails>
+      </Accordion>
+    )
+  });
 }
