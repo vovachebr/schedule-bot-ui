@@ -68,8 +68,8 @@ function AddLessonPage({enqueueSnackbar}) {
   const [backgroundsList, setBackgroundsList] = React.useState([]);
   const [imageNameToSend, setImageNameToSend] = React.useState("");
   const [templateToSend, setTemplateToSend] = React.useState(`<@&${process.env.REACT_APP_STUDENT_TAG_ID}> Добрый день!
-Сегодня, {date}, в {time} по московскому времени состоится занятие «{lesson}». Его проведет {lector}.
-{addidional}
+Сегодня, **{date}**, в **{time}** по московскому времени состоится занятие «{lesson}». Его проведет **{lector}**.
+{additional}
 
 Ссылку на трансляцию вы найдете в личном кабинете и в письме, которое сегодня придет вам на почту за два часа до лекции.
 `);
@@ -111,7 +111,7 @@ function AddLessonPage({enqueueSnackbar}) {
       .replace(/{time}/g, getTime())
       .replace(/{lesson}/g, lecture)
       .replace(/{lector}/g, lector)
-      .replace(/{addidional}/g, additional);
+      .replace(/{additional}/g, additional);
   }
 
   const getTime = () => {
@@ -150,7 +150,7 @@ function AddLessonPage({enqueueSnackbar}) {
 
     const data = {
       group: hook.group,
-      text: convertText(templateToSend),
+      text: templateToSend,
       image: imageNameToSend,
       date: selectedDate.toISOString().slice(0, 10),
       time: getTime(),
@@ -265,7 +265,7 @@ function AddLessonPage({enqueueSnackbar}) {
                 <li>{`{time} для добавления времени занятия`}</li>
                 <li>{`{lesson} для добавления темы занятия`}</li>
                 <li>{`{lector} для добавления ФИ преподавателя`}</li>
-                <li>{`{addidional} для добавления обсуждаемых тем`}</li>
+                <li>{`{additional} для добавления обсуждаемых тем`}</li>
               </ul>
             </div>
           </div>
