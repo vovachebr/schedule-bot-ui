@@ -195,7 +195,7 @@ function AddLessonPage({enqueueSnackbar}) {
                   onInputChange={(e, value) => setSearchValue(value)}
                   getOptionLabel={(h) => `Группа: "${h.group}", канал: "${h.channel}".`}
                   onChange={(event, value) => {
-                    setSearchValue(value && `Группа: "${value.group}", канал: "${value.channel}".` || "");
+                    setSearchValue(value ? `Группа: "${value.group}", канал: "${value.channel}".` : "");
                     setHook(value || {});
                   }}
                   style={{width: '100%'}}
@@ -274,7 +274,7 @@ function AddLessonPage({enqueueSnackbar}) {
             <h3>Группа: {hook.group || "не задана"}</h3>
             <h3>Сообщение:</h3>
             <pre className={classes.pre}>{convertText(templateToSend)}</pre>
-            {imageNameToSend && <img src={`/images/getImageByName?name=${imageNameToSend}`}/>}
+            {imageNameToSend && <img alt="изображение для отправки" src={`/images/getImageByName?name=${imageNameToSend}`}/>}
             <Button
               variant="contained"
               className={classes.sendButton}

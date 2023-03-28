@@ -105,7 +105,7 @@ function GetLessonsPage({enqueueSnackbar}) {
     .then(result => setLessons(result.lessons));
   }
   
-  React.useEffect(() => getLessons(isSendLessons), []);
+  React.useEffect(() => getLessons(isSendLessons), [isSendLessons]);
 
   return (
     <div className={classes.table}>

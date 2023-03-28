@@ -149,6 +149,7 @@ function SendMessagePage({enqueueSnackbar}) {
           multiline
           rows="8"
           value={message}
+          inputProps={{ maxLength: 1900 }}
           onInput={e => {setMessage(e.target.value); setSelectedTemplate(null)}}
         />
         <FormControl variant="outlined" className={classes.formControl}>

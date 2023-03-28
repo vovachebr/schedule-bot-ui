@@ -3,7 +3,6 @@ import { withSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import MaterialTable from 'material-table';
-import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';

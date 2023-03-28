@@ -8,14 +8,13 @@ import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
-import Popover from '@material-ui/core/Popover';
 import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Input from '@material-ui/core/Input';
 import CheckIcon from '@material-ui/icons/Check';
 import SaveIcon from '@material-ui/icons/Save';
-import { DeleteForever, Clear } from '@material-ui/icons';
+import { DeleteForever } from '@material-ui/icons';
 
 const useStyles = makeStyles({
   card: {
@@ -230,7 +229,7 @@ function SettingsAccordion({enqueueSnackbar}) {
           {
             backgroundsList.map(b => 
             <div key={b.name} className={classes.backgroundImageCard}>
-              <img src={`${process.env.REACT_APP_API_URL}/images/getImageByName?name=${b.name}`} width="760" height="365"/>
+              <img alt={b.name} src={`/images/getImageByName?name=${b.name}`} width="760" height="365"/>
               <Typography>{b.name}</Typography>
               <Fab color="primary" size="small" onClick={() => removeImage(b.name, setBackgroundsList)}>
                 <DeleteForever />
