@@ -155,7 +155,8 @@ function AddLessonPage({enqueueSnackbar}) {
       date: selectedDate.toISOString().slice(0, 10),
       time: getTime(),
       teacher: lector,
-      lecture
+      lecture,
+      additional
     }
     fetch(`${process.env.REACT_APP_API_URL}/lessons/add`, {
       method: 'POST',
