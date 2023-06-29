@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
 function AddLessonPage({enqueueSnackbar}) {
   const classes = useStyles();
 
-  const [hook, setHook] = React.useState('');
+  const [hooks, setHooks] = React.useState([]);
   const [searchValue, setSearchValue] = React.useState('');
   const [lecture, setLecture] = React.useState('');
   const [selectedDate, setSelectedDate] = React.useState(new Date());
@@ -123,11 +123,11 @@ function AddLessonPage({enqueueSnackbar}) {
   }
 
   const getLastLesson = () => {
-    if(!hook) {
+    if(!hooks.length === 0) {
       enqueueSnackbar("Необходимо выбрать канал для отправки", {variant: 'error'});
       return;
     }
-    const course = hook.group.split('-')[0].toUpperCase();
+    const course = hooks[0].group.split('-')[0].toUpperCase();
     fetch(`${process.env.REACT_APP_API_URL}/lessons/getLastLecture?lecture=${lecture}&course=${course}`)
       .then(response => response.json())
       .then(result => {
@@ -143,42 +143,45 @@ function AddLessonPage({enqueueSnackbar}) {
   }
 
   const createLesson = () => {
-    if(!hook.group) {
+    if(hooks.length === 0) {
       enqueueSnackbar("Нельзя создать анонс без группы", {variant: 'error'});
       return;
     }
 
-    const data = {
-      group: hook.group,
-      text: templateToSend,
-      image: imageNameToSend,
-      date: selectedDate.toISOString().slice(0, 10),
-      time: getTime(),
-      teacher: lector,
-      lecture,
-      additional
-    }
-    fetch(`${process.env.REACT_APP_API_URL}/lessons/add`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
-    })
-      .then(response => response.json())
-      .then(result => {
-        if (result.success) {
-          enqueueSnackbar("Успешно добавлено", {variant: 'success'});
-          setHook("");
-          setSearchValue("");
-          setLecture("");
-          setLector("");
-          setAdditional("");
-          setImageNameToSend("");
-        } else {
-          enqueueSnackbar(result.error, {variant: 'error'});
-        }
-      });
+    hooks.forEach(hook => {
+      const data = {
+        group: hook.group,
+        text: templateToSend,
+        image: imageNameToSend,
+        date: selectedDate.toISOString().slice(0, 10),
+        time: getTime(),
+        teacher: lector,
+        lecture,
+        additional
+      }
+  
+      fetch(`${process.env.REACT_APP_API_URL}/lessons/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .then(result => {
+          if (result.success) {
+            enqueueSnackbar("Успешно добавлено", {variant: 'success'});
+            setHooks([]);
+            setSearchValue("");
+            setLecture("");
+            setLector("");
+            setAdditional("");
+            setImageNameToSend("");
+          } else {
+            enqueueSnackbar(result.error, {variant: 'error'});
+          }
+        });
+    });
   }
 
   return (
@@ -191,13 +194,13 @@ function AddLessonPage({enqueueSnackbar}) {
               <FormControl variant="outlined" className={classes.formControl}>
                 <Autocomplete
                   id="group"
+                  multiple
                   options={data.hooks}
                   inputValue={searchValue}
                   onInputChange={(e, value) => setSearchValue(value)}
                   getOptionLabel={(h) => `Группа: "${h.group}", канал: "${h.channel}".`}
                   onChange={(event, value) => {
-                    setSearchValue(value ? `Группа: "${value.group}", канал: "${value.channel}".` : "");
-                    setHook(value || {});
+                    setHooks(value);
                   }}
                   style={{width: '100%'}}
                   renderInput={(params) => <TextField {...params} label="Группа/канал" variant="outlined"/>}
@@ -209,10 +212,10 @@ function AddLessonPage({enqueueSnackbar}) {
                 value={lecture}
                 onChange={event => setLecture(event.target.value)}
               />
-              <Button variant="outlined" color="primary" onClick={getLastLesson}>
-                Получить закреплённое занятие
+              { hooks.length > 0 && <Button variant="outlined" color="primary" onClick={getLastLesson}>
+                Получить закреплённое занятие к группе: {hooks[0].group}
                 <Stars/>
-              </Button>
+              </Button> }
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <DateTimePicker
                   variant="inline"
@@ -272,10 +275,10 @@ function AddLessonPage({enqueueSnackbar}) {
           </div>
           <div className={classes.column}>
             <h2>Результат сообщения:</h2>
-            <h3>Группа: {hook.group || "не задана"}</h3>
+            <h3>Группы: {hooks.map(h => h.group).join("/") || "не заданы"}</h3>
             <h3>Сообщение:</h3>
             <pre className={classes.pre}>{convertText(templateToSend)}</pre>
-            {imageNameToSend && <img alt="изображение для отправки" src={`/images/getImageByName?name=${imageNameToSend}`}/>}
+            {imageNameToSend && <img alt="изображение для отправки" src={`${process.env.REACT_APP_API_URL}/images/getImageByName?name=${imageNameToSend}`}/>}
             <Button
               variant="contained"
               className={classes.sendButton}
